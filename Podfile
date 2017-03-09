@@ -6,6 +6,7 @@ workspace 'uproar-mac-client.xcworkspace'
 target 'uproar-mac-client' do
 	project 'uproar-mac-client.xcodeproj'
 
-        pod 'SwiftMQTT'	
+        pod 'SwiftMQTT'
+        pod 'ReactiveCocoa', '~> 5.0.1'
 end
 

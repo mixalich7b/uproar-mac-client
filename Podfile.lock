@@ -1,12 +1,21 @@
 PODS:
+  - ReactiveCocoa (5.0.1):
+    - ReactiveSwift (~> 1.1)
+  - ReactiveSwift (1.1.0):
+    - Result (~> 3.1)
+  - Result (3.2.1)
   - SwiftMQTT (2.0.0)
 
 DEPENDENCIES:
+  - ReactiveCocoa (~> 5.0.1)
   - SwiftMQTT
 
 SPEC CHECKSUMS:
+  ReactiveCocoa: f577006aa6c7b0b08020109ebaae3b77ada00adc
+  ReactiveSwift: 2f4e4a02e5a5c87ea63f5fe667163ce2a67cbb57
+  Result: 2453a22e5c5b11c0c3a478736e82cd02f763b781
   SwiftMQTT: 1223cdf3056cd9211112e3f136aa221125b457e1
 
-PODFILE CHECKSUM: a362dd9445965644a4fc45c06f22978b700faff2
+PODFILE CHECKSUM: b951e8ed46c42267331d6ed5f12149387143aefa
 
 COCOAPODS: 1.2.0
