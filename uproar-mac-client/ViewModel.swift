@@ -41,7 +41,7 @@ class ViewModel: NSObject, MQTTSessionDelegate {
     
     private func subscribeToDeviceChannel() {
         let channelName = "device_in_\(Constants.token)"
-        mqttSession.subscribe(to: channelName, delivering: .exactlyOnce) {[weak self] (succeeded, error) in
+        mqttSession.subscribe(to: channelName, delivering: .atLeastOnce) {[weak self] (succeeded, error) in
             if succeeded {
                 print("Subscribed!")
                 self?.sendRegister()
@@ -52,17 +52,31 @@ class ViewModel: NSObject, MQTTSessionDelegate {
     }
     
     private func sendRegister() {
-        mqttSession.publish(Constants.token.data(using: .utf8)!, in: "registry", delivering: .exactlyOnce, retain: false) { (succeeded, error) in
+        mqttSession.publish(Constants.token.data(using: .utf8)!, in: "registry", delivering: .atLeastOnce, retain: false) {[weak self] (succeeded, error) in
             if succeeded {
                 print("Registered!")
+                self?.sendBoring()
             } else {
                 print("Couldn't register token")
             }
         }
     }
     
+    private func sendBoring() {
+        let boringMessage = ["token": Constants.token, "update": "boring"]
+        let messageData = try! JSONSerialization.data(withJSONObject: boringMessage, options: [])
+        mqttSession.publish(messageData, in: "device_out", delivering: .atLeastOnce, retain: false, completion: { (succeeded, error) in
+            if succeeded {
+                print("Boring sent")
+            } else {
+                print("Couldn't send 'boring'")
+            }
+        })
+    }
+    
     deinit {
         mqttSession.disconnect()
+        mqttSession.delegate = nil
     }
     
     // MARK MQTTSessionDelegate
