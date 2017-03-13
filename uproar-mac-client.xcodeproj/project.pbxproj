@@ -13,6 +13,7 @@
 		B2C9AE531E7213BA00CA4E07 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B2C9AE511E7213BA00CA4E07 /* Main.storyboard */; };
 		B2C9AE5B1E7217DE00CA4E07 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C9AE5A1E7217DE00CA4E07 /* ViewModel.swift */; };
 		B2C9AE5D1E721A4400CA4E07 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C9AE5C1E721A4400CA4E07 /* Constants.swift */; };
+		B2C9AE5F1E7572DA00CA4E07 /* UproarClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C9AE5E1E7572DA00CA4E07 /* UproarClient.swift */; };
 		E28F467B42CCCA322A2B071D /* Pods_uproar_mac_client.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B87982ED378375C60CA4EB9 /* Pods_uproar_mac_client.framework */; };
 /* End PBXBuildFile section */
 
@@ -28,6 +29,7 @@
 		B2C9AE541E7213BA00CA4E07 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B2C9AE5A1E7217DE00CA4E07 /* ViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		B2C9AE5C1E721A4400CA4E07 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		B2C9AE5E1E7572DA00CA4E07 /* UproarClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UproarClient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +80,7 @@
 				B2C9AE4F1E7213BA00CA4E07 /* Assets.xcassets */,
 				B2C9AE511E7213BA00CA4E07 /* Main.storyboard */,
 				B2C9AE541E7213BA00CA4E07 /* Info.plist */,
+				B2C9AE5E1E7572DA00CA4E07 /* UproarClient.swift */,
 			);
 			path = "uproar-mac-client";
 			sourceTree = "<group>";
@@ -215,6 +218,7 @@
 			files = (
 				B2C9AE4E1E7213BA00CA4E07 /* ViewController.swift in Sources */,
 				B2C9AE5B1E7217DE00CA4E07 /* ViewModel.swift in Sources */,
+				B2C9AE5F1E7572DA00CA4E07 /* UproarClient.swift in Sources */,
 				B2C9AE4C1E7213BA00CA4E07 /* AppDelegate.swift in Sources */,
 				B2C9AE5D1E721A4400CA4E07 /* Constants.swift in Sources */,
 			);
