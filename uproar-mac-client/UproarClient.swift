@@ -34,7 +34,7 @@ class UproarClient: MQTTSessionDelegate {
             .flatMapError { _ in
                 return SignalProducer<(), NoError>.empty
             }
-            .delay(3.0, on: QueueScheduler.main)
+            .delay(10.0, on: QueueScheduler.main)
             .repeat(1000)
             .start()
     }
