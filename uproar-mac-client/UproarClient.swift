@@ -21,19 +21,16 @@ class UproarClient: MQTTSessionDelegate {
     private let isRegistered: Atomic<Bool> = Atomic(false)
     
     private let isManualDisconnected: Atomic<Bool> = Atomic(false)
-    private let (disconnectedSignal, disconnectedObserver) = Signal<(), NoError>.pipe()
+    private let (disconnectSignal, disconnectObserver) = Signal<(), NoError>.pipe()
     
     init() {
         let subscribeToDeviceChannelSignal = self.subscribeToDeviceChannel()
         let sendRegisterSignal = self.sendRegister()
-        let disconnectErrorSignalProducer = SignalProducer(
-            disconnectedSignal
-                .flatMap(.latest) { SignalProducer<(), AnyError>(error: AnyError(NSError(domain: "UproarClient", code: 0, userInfo: nil))) }
-        )
+        let disconnectSignalProducer = SignalProducer(disconnectSignal)
         connectMqtt()
             .flatMap(.concat) { subscribeToDeviceChannelSignal }
             .flatMap(.concat) { sendRegisterSignal }
-            .then(disconnectErrorSignalProducer)
+            .then(disconnectSignalProducer.take(first: 1))
             .flatMapError { _ in
                 return SignalProducer<(), NoError>.empty
             }
@@ -114,7 +111,7 @@ class UproarClient: MQTTSessionDelegate {
     
     private func createMqttSession() -> MQTTSession {
         let tokenComponents = Constants.token.components(separatedBy: "-")
-        let session = MQTTSession(host: "m21.cloudmqtt.com", port: 18552, clientID: "uproar-mac", cleanSession: true, keepAlive: 60, useSSL: false)
+        let session = MQTTSession(host: "m21.cloudmqtt.com", port: 18552, clientID: "uproar-mac", cleanSession: true, keepAlive: 20, useSSL: false)
         session.username = "\(tokenComponents[0])-\(tokenComponents[1])"
         session.password = Constants.token
         session.delegate = self
@@ -164,7 +161,7 @@ class UproarClient: MQTTSessionDelegate {
     func mqttDidDisconnect(session: MQTTSession) {
         print("\(session) disconnected")
         if !isManualDisconnected.value {
-            disconnectedObserver.send(value: ())
+            disconnectObserver.send(value: ())
         }
     }
 }
