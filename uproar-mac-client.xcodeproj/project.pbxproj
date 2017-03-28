@@ -7,13 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B2A0F0DB1E89BAC0002C5160 /* UproarClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A0F0D01E89BAC0002C5160 /* UproarClient.swift */; };
+		B2A0F0DC1E89BAC0002C5160 /* Downloader.py in Resources */ = {isa = PBXBuildFile; fileRef = B2A0F0D21E89BAC0002C5160 /* Downloader.py */; };
+		B2A0F0DD1E89BAC0002C5160 /* youtube_dl.zip in Resources */ = {isa = PBXBuildFile; fileRef = B2A0F0D31E89BAC0002C5160 /* youtube_dl.zip */; };
+		B2A0F0DE1E89BAC0002C5160 /* YoutubeLoaderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A0F0D51E89BAC0002C5160 /* YoutubeLoaderService.swift */; };
+		B2A0F0DF1E89BAC0002C5160 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A0F0D71E89BAC0002C5160 /* PlayerView.swift */; };
+		B2A0F0E01E89BAC0002C5160 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A0F0D81E89BAC0002C5160 /* ViewController.swift */; };
+		B2A0F0E11E89BAC0002C5160 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A0F0DA1E89BAC0002C5160 /* ViewModel.swift */; };
+		B2A0F0E41E89BB1D002C5160 /* YoutubeLoadingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A0F0E31E89BB1D002C5160 /* YoutubeLoadingError.swift */; };
+		B2A0F0E61E89CDCB002C5160 /* AssetError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A0F0E51E89CDCB002C5160 /* AssetError.swift */; };
 		B2C9AE4C1E7213BA00CA4E07 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C9AE4B1E7213BA00CA4E07 /* AppDelegate.swift */; };
-		B2C9AE4E1E7213BA00CA4E07 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C9AE4D1E7213BA00CA4E07 /* ViewController.swift */; };
 		B2C9AE501E7213BA00CA4E07 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B2C9AE4F1E7213BA00CA4E07 /* Assets.xcassets */; };
 		B2C9AE531E7213BA00CA4E07 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B2C9AE511E7213BA00CA4E07 /* Main.storyboard */; };
-		B2C9AE5B1E7217DE00CA4E07 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C9AE5A1E7217DE00CA4E07 /* ViewModel.swift */; };
 		B2C9AE5D1E721A4400CA4E07 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C9AE5C1E721A4400CA4E07 /* Constants.swift */; };
-		B2C9AE5F1E7572DA00CA4E07 /* UproarClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C9AE5E1E7572DA00CA4E07 /* UproarClient.swift */; };
 		E28F467B42CCCA322A2B071D /* Pods_uproar_mac_client.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B87982ED378375C60CA4EB9 /* Pods_uproar_mac_client.framework */; };
 /* End PBXBuildFile section */
 
@@ -21,15 +27,21 @@
 		3B87982ED378375C60CA4EB9 /* Pods_uproar_mac_client.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_uproar_mac_client.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		86651435063EF30B9E256BF4 /* Pods-uproar-mac-client.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-uproar-mac-client.debug.xcconfig"; path = "Pods/Target Support Files/Pods-uproar-mac-client/Pods-uproar-mac-client.debug.xcconfig"; sourceTree = "<group>"; };
 		A137BB96808D92C5AC7B1BC9 /* Pods-uproar-mac-client.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-uproar-mac-client.release.xcconfig"; path = "Pods/Target Support Files/Pods-uproar-mac-client/Pods-uproar-mac-client.release.xcconfig"; sourceTree = "<group>"; };
+		B2A0F0D01E89BAC0002C5160 /* UproarClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UproarClient.swift; sourceTree = "<group>"; };
+		B2A0F0D21E89BAC0002C5160 /* Downloader.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = Downloader.py; sourceTree = "<group>"; };
+		B2A0F0D31E89BAC0002C5160 /* youtube_dl.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = youtube_dl.zip; sourceTree = "<group>"; };
+		B2A0F0D51E89BAC0002C5160 /* YoutubeLoaderService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YoutubeLoaderService.swift; sourceTree = "<group>"; };
+		B2A0F0D71E89BAC0002C5160 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
+		B2A0F0D81E89BAC0002C5160 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		B2A0F0DA1E89BAC0002C5160 /* ViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
+		B2A0F0E31E89BB1D002C5160 /* YoutubeLoadingError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YoutubeLoadingError.swift; sourceTree = "<group>"; };
+		B2A0F0E51E89CDCB002C5160 /* AssetError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetError.swift; sourceTree = "<group>"; };
 		B2C9AE481E7213BA00CA4E07 /* uproar-mac-client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "uproar-mac-client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2C9AE4B1E7213BA00CA4E07 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		B2C9AE4D1E7213BA00CA4E07 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		B2C9AE4F1E7213BA00CA4E07 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B2C9AE521E7213BA00CA4E07 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B2C9AE541E7213BA00CA4E07 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B2C9AE5A1E7217DE00CA4E07 /* ViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		B2C9AE5C1E721A4400CA4E07 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		B2C9AE5E1E7572DA00CA4E07 /* UproarClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UproarClient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -50,6 +62,57 @@
 				3B87982ED378375C60CA4EB9 /* Pods_uproar_mac_client.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B2A0F0CF1E89BAC0002C5160 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				B2A0F0D01E89BAC0002C5160 /* UproarClient.swift */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
+		B2A0F0D11E89BAC0002C5160 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B2A0F0D21E89BAC0002C5160 /* Downloader.py */,
+				B2A0F0D31E89BAC0002C5160 /* youtube_dl.zip */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		B2A0F0D41E89BAC0002C5160 /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				B2A0F0D51E89BAC0002C5160 /* YoutubeLoaderService.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
+		B2A0F0D61E89BAC0002C5160 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				B2A0F0D71E89BAC0002C5160 /* PlayerView.swift */,
+				B2A0F0D81E89BAC0002C5160 /* ViewController.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		B2A0F0D91E89BAC0002C5160 /* View model */ = {
+			isa = PBXGroup;
+			children = (
+				B2A0F0DA1E89BAC0002C5160 /* ViewModel.swift */,
+			);
+			path = "View model";
+			sourceTree = "<group>";
+		};
+		B2A0F0E21E89BAE2002C5160 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				B2A0F0E31E89BB1D002C5160 /* YoutubeLoadingError.swift */,
+				B2A0F0E51E89CDCB002C5160 /* AssetError.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		B2C9AE3F1E7213BA00CA4E07 = {
@@ -73,14 +136,17 @@
 		B2C9AE4A1E7213BA00CA4E07 /* uproar-mac-client */ = {
 			isa = PBXGroup;
 			children = (
+				B2A0F0E21E89BAE2002C5160 /* Model */,
+				B2A0F0CF1E89BAC0002C5160 /* Helper */,
+				B2A0F0D11E89BAC0002C5160 /* Resources */,
+				B2A0F0D41E89BAC0002C5160 /* Service */,
+				B2A0F0D61E89BAC0002C5160 /* View */,
+				B2A0F0D91E89BAC0002C5160 /* View model */,
 				B2C9AE4B1E7213BA00CA4E07 /* AppDelegate.swift */,
-				B2C9AE4D1E7213BA00CA4E07 /* ViewController.swift */,
-				B2C9AE5A1E7217DE00CA4E07 /* ViewModel.swift */,
 				B2C9AE5C1E721A4400CA4E07 /* Constants.swift */,
 				B2C9AE4F1E7213BA00CA4E07 /* Assets.xcassets */,
 				B2C9AE511E7213BA00CA4E07 /* Main.storyboard */,
 				B2C9AE541E7213BA00CA4E07 /* Info.plist */,
-				B2C9AE5E1E7572DA00CA4E07 /* UproarClient.swift */,
 			);
 			path = "uproar-mac-client";
 			sourceTree = "<group>";
@@ -156,8 +222,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B2A0F0DC1E89BAC0002C5160 /* Downloader.py in Resources */,
 				B2C9AE501E7213BA00CA4E07 /* Assets.xcassets in Resources */,
 				B2C9AE531E7213BA00CA4E07 /* Main.storyboard in Resources */,
+				B2A0F0DD1E89BAC0002C5160 /* youtube_dl.zip in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -216,11 +284,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B2C9AE4E1E7213BA00CA4E07 /* ViewController.swift in Sources */,
-				B2C9AE5B1E7217DE00CA4E07 /* ViewModel.swift in Sources */,
-				B2C9AE5F1E7572DA00CA4E07 /* UproarClient.swift in Sources */,
+				B2A0F0E01E89BAC0002C5160 /* ViewController.swift in Sources */,
+				B2A0F0E41E89BB1D002C5160 /* YoutubeLoadingError.swift in Sources */,
+				B2A0F0E61E89CDCB002C5160 /* AssetError.swift in Sources */,
 				B2C9AE4C1E7213BA00CA4E07 /* AppDelegate.swift in Sources */,
 				B2C9AE5D1E721A4400CA4E07 /* Constants.swift in Sources */,
+				B2A0F0DE1E89BAC0002C5160 /* YoutubeLoaderService.swift in Sources */,
+				B2A0F0DF1E89BAC0002C5160 /* PlayerView.swift in Sources */,
+				B2A0F0DB1E89BAC0002C5160 /* UproarClient.swift in Sources */,
+				B2A0F0E11E89BAC0002C5160 /* ViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

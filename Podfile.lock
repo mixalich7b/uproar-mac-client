@@ -4,18 +4,21 @@ PODS:
   - ReactiveSwift (1.1.0):
     - Result (~> 3.1)
   - Result (3.2.1)
+  - SSZipArchive (1.7)
   - SwiftMQTT (2.0.0)
 
 DEPENDENCIES:
   - ReactiveCocoa (~> 5.0.1)
+  - SSZipArchive
   - SwiftMQTT
 
 SPEC CHECKSUMS:
   ReactiveCocoa: f577006aa6c7b0b08020109ebaae3b77ada00adc
   ReactiveSwift: 2f4e4a02e5a5c87ea63f5fe667163ce2a67cbb57
   Result: 2453a22e5c5b11c0c3a478736e82cd02f763b781
+  SSZipArchive: 63f8e11cfcc33e03e4cd666b4359ea8bd6facd0c
   SwiftMQTT: 1223cdf3056cd9211112e3f136aa221125b457e1
 
-PODFILE CHECKSUM: b951e8ed46c42267331d6ed5f12149387143aefa
+PODFILE CHECKSUM: bfaac3e408f53d8511d88402312218e8a798b717
 
 COCOAPODS: 1.2.0

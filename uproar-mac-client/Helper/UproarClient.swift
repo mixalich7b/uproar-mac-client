@@ -111,7 +111,7 @@ class UproarClient: MQTTSessionDelegate {
     
     private func createMqttSession() -> MQTTSession {
         let tokenComponents = Constants.token.components(separatedBy: "-")
-        let session = MQTTSession(host: "m21.cloudmqtt.com", port: 18552, clientID: "uproar-mac", cleanSession: true, keepAlive: 20, useSSL: false)
+        let session = MQTTSession(host: "m21.cloudmqtt.com", port: 18552, clientID: "uproar-mac", cleanSession: true, keepAlive: 0, useSSL: false)
         session.username = "\(tokenComponents[0])-\(tokenComponents[1])"
         session.password = Constants.token
         session.delegate = self
