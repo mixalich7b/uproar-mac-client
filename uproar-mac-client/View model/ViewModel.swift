@@ -31,7 +31,7 @@ class ViewModel: NSObject {
     override init() {
         super.init()
         
-        SignalProducer(value: "https://www.youtube.com/watch?v=doAcaKGeQwI")
+        SignalProducer(value: "https://www.youtube.com/watch?v=5po2VulU9-A")
             .flatMap(.merge, transform: download)
             .observe(on: UIScheduler())
             .start(handleAssetEvent)

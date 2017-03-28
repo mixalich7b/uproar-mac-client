@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B2A0F0DB1E89BAC0002C5160 /* UproarClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A0F0D01E89BAC0002C5160 /* UproarClient.swift */; };
+		B22F32971E8AAD70006E9F8B /* UproarClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22F32961E8AAD70006E9F8B /* UproarClient.swift */; };
 		B2A0F0DC1E89BAC0002C5160 /* Downloader.py in Resources */ = {isa = PBXBuildFile; fileRef = B2A0F0D21E89BAC0002C5160 /* Downloader.py */; };
 		B2A0F0DD1E89BAC0002C5160 /* youtube_dl.zip in Resources */ = {isa = PBXBuildFile; fileRef = B2A0F0D31E89BAC0002C5160 /* youtube_dl.zip */; };
 		B2A0F0DE1E89BAC0002C5160 /* YoutubeLoaderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A0F0D51E89BAC0002C5160 /* YoutubeLoaderService.swift */; };
@@ -27,7 +27,7 @@
 		3B87982ED378375C60CA4EB9 /* Pods_uproar_mac_client.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_uproar_mac_client.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		86651435063EF30B9E256BF4 /* Pods-uproar-mac-client.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-uproar-mac-client.debug.xcconfig"; path = "Pods/Target Support Files/Pods-uproar-mac-client/Pods-uproar-mac-client.debug.xcconfig"; sourceTree = "<group>"; };
 		A137BB96808D92C5AC7B1BC9 /* Pods-uproar-mac-client.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-uproar-mac-client.release.xcconfig"; path = "Pods/Target Support Files/Pods-uproar-mac-client/Pods-uproar-mac-client.release.xcconfig"; sourceTree = "<group>"; };
-		B2A0F0D01E89BAC0002C5160 /* UproarClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UproarClient.swift; sourceTree = "<group>"; };
+		B22F32961E8AAD70006E9F8B /* UproarClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UproarClient.swift; sourceTree = "<group>"; };
 		B2A0F0D21E89BAC0002C5160 /* Downloader.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = Downloader.py; sourceTree = "<group>"; };
 		B2A0F0D31E89BAC0002C5160 /* youtube_dl.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = youtube_dl.zip; sourceTree = "<group>"; };
 		B2A0F0D51E89BAC0002C5160 /* YoutubeLoaderService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YoutubeLoaderService.swift; sourceTree = "<group>"; };
@@ -64,14 +64,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		B2A0F0CF1E89BAC0002C5160 /* Helper */ = {
-			isa = PBXGroup;
-			children = (
-				B2A0F0D01E89BAC0002C5160 /* UproarClient.swift */,
-			);
-			path = Helper;
-			sourceTree = "<group>";
-		};
 		B2A0F0D11E89BAC0002C5160 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -84,6 +76,7 @@
 		B2A0F0D41E89BAC0002C5160 /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				B22F32961E8AAD70006E9F8B /* UproarClient.swift */,
 				B2A0F0D51E89BAC0002C5160 /* YoutubeLoaderService.swift */,
 			);
 			path = Service;
@@ -137,7 +130,6 @@
 			isa = PBXGroup;
 			children = (
 				B2A0F0E21E89BAE2002C5160 /* Model */,
-				B2A0F0CF1E89BAC0002C5160 /* Helper */,
 				B2A0F0D11E89BAC0002C5160 /* Resources */,
 				B2A0F0D41E89BAC0002C5160 /* Service */,
 				B2A0F0D61E89BAC0002C5160 /* View */,
@@ -289,9 +281,9 @@
 				B2A0F0E61E89CDCB002C5160 /* AssetError.swift in Sources */,
 				B2C9AE4C1E7213BA00CA4E07 /* AppDelegate.swift in Sources */,
 				B2C9AE5D1E721A4400CA4E07 /* Constants.swift in Sources */,
+				B22F32971E8AAD70006E9F8B /* UproarClient.swift in Sources */,
 				B2A0F0DE1E89BAC0002C5160 /* YoutubeLoaderService.swift in Sources */,
 				B2A0F0DF1E89BAC0002C5160 /* PlayerView.swift in Sources */,
-				B2A0F0DB1E89BAC0002C5160 /* UproarClient.swift in Sources */,
 				B2A0F0E11E89BAC0002C5160 /* ViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

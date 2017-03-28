@@ -33,12 +33,12 @@ class YoutubeLoaderService {
             print("Unzipped")
         }
         
-        let downloaderPath = Bundle.main.path(forResource: "Downloader", ofType: "py")!
-        let downloaderDestinationUrl = appSupportUrl.appendingPathComponent("Downloader.py")
-        if fileManager.fileExists(atPath: downloaderDestinationUrl.path) {
-            try! fileManager.removeItem(atPath: downloaderDestinationUrl.path)
+        let downloaderScriptPath = Bundle.main.path(forResource: "Downloader", ofType: "py")!
+        let downloaderScriptDestinationUrl = appSupportUrl.appendingPathComponent("Downloader.py")
+        if fileManager.fileExists(atPath: downloaderScriptDestinationUrl.path) {
+            try! fileManager.removeItem(atPath: downloaderScriptDestinationUrl.path)
         }
-        try! fileManager.copyItem(atPath: downloaderPath, toPath: downloaderDestinationUrl.path)
+        try! fileManager.copyItem(atPath: downloaderScriptPath, toPath: downloaderScriptDestinationUrl.path)
     }
     
     private func initializePythonContext() {
@@ -54,15 +54,23 @@ class YoutubeLoaderService {
     }
     
     func downloadVideo(by url: URL) -> Signal<URL, YoutubeLoadingError> {
-        let downloaderUrl = appSupportUrl.appendingPathComponent("Downloader.py")
-        var compilerFlags = pyCompilerFlags
-        return Signal { (observer) -> Disposable? in
-            downloaderQueue.async {
-                let mainFile = fopen(downloaderUrl.path, "r")
-                if PyRun_SimpleFileExFlags(mainFile, (downloaderUrl.path as NSString).lastPathComponent, 1, &compilerFlags) == 0 {
-                    let videoUrlStub = self.appSupportUrl.appendingPathComponent("videos").appendingPathComponent("doAcaKGeQwI.mp4")
-                    observer.send(value: videoUrlStub)
-                }
+        return Signal {[weak self] (observer) -> Disposable? in
+            self?.initializePythonContext()
+            
+            let urlPath = url.absoluteString
+            var urlBytes: UnsafeMutablePointer<Int8>? = urlPath.cString(using: .utf8).map { UnsafeMutablePointer(mutating: $0) }
+            PySys_SetArgvEx(1, &urlBytes, 0)
+            
+            self?.downloaderQueue.async {
+                let pModule = PyImport_ImportModule("Downloader")
+                let getFilenameFunc = PyObject_GetAttrString(pModule, "getFinalFilepath")
+                
+                let filepathObject = PyObject_CallObject(getFilenameFunc, PyTuple_New(0))
+                let filepath = String(cString: PyString_AsString(filepathObject), encoding: .utf8)!
+                
+                Py_Finalize()
+                
+                observer.send(value: URL(fileURLWithPath: filepath))
             }
             return nil
         }
