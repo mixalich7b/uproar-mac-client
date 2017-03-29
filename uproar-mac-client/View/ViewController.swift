@@ -48,10 +48,11 @@ class ViewController: NSViewController {
         
         player.play()
         
-        viewModel.nextVideoAsset.startWithValues {[weak self] (asset) in
+        viewModel.nextVideoAssetSignalProducer.startWithValues {[weak self] (asset) in
             let playerItem = AVPlayerItem(asset: asset)
             self?.player.replaceCurrentItem(with: playerItem)
         }
+        viewModel.playNextAction.apply(()).start()
     }
     
     override func viewDidDisappear() {

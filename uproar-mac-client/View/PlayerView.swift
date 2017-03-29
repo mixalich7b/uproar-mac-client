@@ -55,4 +55,11 @@ class PlayerView: NSView {
             playerLayer.removeFromSuperlayer()
         }
     }
+    
+    override func draw(_ dirtyRect: NSRect) {
+        NSColor.black.setFill()
+        NSRectFillUsingOperation(dirtyRect, .sourceOver)
+        
+        super.draw(dirtyRect)
+    }
 }

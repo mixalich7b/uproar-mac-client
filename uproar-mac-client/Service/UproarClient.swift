@@ -152,10 +152,15 @@ class UproarClient: MQTTSessionDelegate {
     func mqttDidReceive(message data: Data, in topic: String, from session: MQTTSession) {
         let message = String(data: data, encoding: .utf8)!
         print("\(topic):\n\(message)")
+        
+        
     }
     
     func mqttSocketErrorOccurred(session: MQTTSession) {
         print("Socket error occured in \(session)")
+        if !isManualDisconnected.value {
+            disconnectObserver.send(value: ())
+        }
     }
     
     func mqttDidDisconnect(session: MQTTSession) {

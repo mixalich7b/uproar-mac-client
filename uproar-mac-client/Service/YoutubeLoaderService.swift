@@ -62,15 +62,30 @@ class YoutubeLoaderService {
             PySys_SetArgvEx(1, &urlBytes, 0)
             
             self?.downloaderQueue.async {
+                defer {
+                    DispatchQueue.main.async {
+                        Py_Finalize()
+                    }
+                }
                 let pModule = PyImport_ImportModule("Downloader")
                 let getFilenameFunc = PyObject_GetAttrString(pModule, "getFinalFilepath")
+                guard PyCallable_Check(getFilenameFunc) == 1 else {
+                    observer.send(error: YoutubeLoadingError(message: "getFinalFilepath missed"))
+                    return
+                }
                 
                 let filepathObject = PyObject_CallObject(getFilenameFunc, PyTuple_New(0))
-                let filepath = String(cString: PyString_AsString(filepathObject), encoding: .utf8)!
-                
-                Py_Finalize()
+                guard let filepathCString = PyString_AsString(filepathObject) else {
+                    observer.send(error: YoutubeLoadingError(message: "getFinalFilepath return nil"))
+                    return
+                }
+                guard let filepath = String(cString: filepathCString, encoding: .utf8) else {
+                    observer.send(error: YoutubeLoadingError(message: "getFinalFilepath return broken string"))
+                    return
+                }
                 
                 observer.send(value: URL(fileURLWithPath: filepath))
+                observer.sendCompleted()
             }
             return nil
         }

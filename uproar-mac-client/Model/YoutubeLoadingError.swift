@@ -9,5 +9,5 @@
 import Foundation
 
 struct YoutubeLoadingError: Error {
-    
+    let message: String
 }

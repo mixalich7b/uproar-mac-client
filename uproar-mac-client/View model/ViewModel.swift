@@ -18,15 +18,15 @@ class ViewModel: NSObject {
         "hasProtectedContent"
     ]
     
-//    private let uproarClient = UproarClient()
+    private let uproarClient = UproarClient()
     
     private let youtubeLoaderService = YoutubeLoaderService()
     
     private var videoAssetsQueue = [AVURLAsset]()
     
-    private lazy var enqueueAsset: Action<AVURLAsset, (), NoError> = self.createEnqueueAssetAction()
-    private(set) lazy var playNext: Action<(), (), NoError> = { Action { SignalProducer(value: $0) } }()
-    private(set) lazy var nextVideoAsset: SignalProducer<AVURLAsset, NoError> = self.createNextVideoAssetSignalProducer()
+    private lazy var enqueueAssetAction: Action<AVURLAsset, (), NoError> = self.enqueueAsset()
+    private(set) lazy var playNextAction: Action<(), (), NoError> = { Action { SignalProducer(value: $0) } }()
+    private(set) lazy var nextVideoAssetSignalProducer: SignalProducer<AVURLAsset, NoError> = self.nextVideoAsset()
     
     override init() {
         super.init()
@@ -37,7 +37,7 @@ class ViewModel: NSObject {
             .start(handleAssetEvent)
     }
     
-    private func createEnqueueAssetAction() -> Action<AVURLAsset, (), NoError> {
+    private func enqueueAsset() -> Action<AVURLAsset, (), NoError> {
         return Action {[weak self] (asset) -> SignalProducer<(), NoError> in
             guard let strongSelf = self else {
                 return SignalProducer.empty
@@ -48,15 +48,14 @@ class ViewModel: NSObject {
         }
     }
     
-    private func createNextVideoAssetSignalProducer() -> SignalProducer<AVURLAsset, NoError> {
-        return SignalProducer(value: ())
-            .concat(SignalProducer(playNext.values))
+    private func nextVideoAsset() -> SignalProducer<AVURLAsset, NoError> {
+        return SignalProducer(playNextAction.values)
             .flatMap(.latest) {[weak self] _ -> SignalProducer<AVURLAsset, NoError> in
                 guard let strongSelf = self else {
                     return SignalProducer.empty
                 }
                 
-                let waitAsset = strongSelf.videoAssetsQueue.isEmpty ? SignalProducer(strongSelf.enqueueAsset.values.take(first: 1)) : SignalProducer(value: ())
+                let waitAsset = strongSelf.videoAssetsQueue.isEmpty ? SignalProducer(strongSelf.enqueueAssetAction.values.take(first: 1)) : SignalProducer(value: ())
                 return waitAsset.flatMap(.latest) { _ -> SignalProducer<AVURLAsset, NoError> in
                     guard let strongSelf = self else {
                         return SignalProducer.empty
@@ -85,7 +84,7 @@ class ViewModel: NSObject {
         case .value(let loadedAsset):
             do {
                 try validate(asset: loadedAsset)
-                enqueueAsset.apply(loadedAsset).start()
+                enqueueAssetAction.apply(loadedAsset).start()
             } catch AssetError.failedKey(let key, let error) {
                 let stringFormat = NSLocalizedString("error.asset_key_%@_failed.description", comment: "Can't use this AVAsset because one of it's keys failed to load")
                 let message = String.localizedStringWithFormat(stringFormat, key)
