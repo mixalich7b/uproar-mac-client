@@ -24,7 +24,6 @@ class YoutubeLoaderService {
     
     init() {
         copyResourcesToAppSupport()
-        initializePythonContext()
     }
     
     private func copyResourcesToAppSupport() {
@@ -55,38 +54,42 @@ class YoutubeLoaderService {
     
     func downloadVideo(by url: URL) -> Signal<URL, YoutubeLoadingError> {
         return Signal {[weak self] (observer) -> Disposable? in
-            self?.initializePythonContext()
-            
-            let urlPath = url.absoluteString
-            var urlBytes: UnsafeMutablePointer<Int8>? = urlPath.cString(using: .utf8).map { UnsafeMutablePointer(mutating: $0) }
-            PySys_SetArgvEx(1, &urlBytes, 0)
-            
-            self?.downloaderQueue.async {
-                defer {
-                    DispatchQueue.main.async {
-                        Py_Finalize()
+            DispatchQueue.main.async {
+                self?.initializePythonContext()
+                
+                let urlPath = url.absoluteString
+                var urlBytes: UnsafeMutablePointer<Int8>? = urlPath.cString(using: .utf8).map { UnsafeMutablePointer(mutating: $0) }
+                PySys_SetArgvEx(1, &urlBytes, 0)
+                
+                self?.downloaderQueue.async {
+                    defer {
+                        DispatchQueue.main.async {
+                            Py_Finalize()
+                        }
                     }
+                    
+                    let pModule = PyImport_ImportModule("Downloader")
+                    let getFilenameFunc = PyObject_GetAttrString(pModule, "getFinalFilepath")
+                    guard PyCallable_Check(getFilenameFunc) == 1 else {
+                        observer.send(error: YoutubeLoadingError(message: "getFinalFilepath missed"))
+                        return
+                    }
+                    
+                    let filepathObject = PyObject_CallObject(getFilenameFunc, PyTuple_New(0))
+                    guard let filepathCString = PyString_AsString(filepathObject) else {
+                        observer.send(error: YoutubeLoadingError(message: "getFinalFilepath return nil"))
+                        return
+                    }
+                    guard let filepath = String(cString: filepathCString, encoding: .utf8) else {
+                        observer.send(error: YoutubeLoadingError(message: "getFinalFilepath return broken string"))
+                        return
+                    }
+                    
+                    observer.send(value: URL(fileURLWithPath: filepath))
+                    observer.sendCompleted()
                 }
-                let pModule = PyImport_ImportModule("Downloader")
-                let getFilenameFunc = PyObject_GetAttrString(pModule, "getFinalFilepath")
-                guard PyCallable_Check(getFilenameFunc) == 1 else {
-                    observer.send(error: YoutubeLoadingError(message: "getFinalFilepath missed"))
-                    return
-                }
-                
-                let filepathObject = PyObject_CallObject(getFilenameFunc, PyTuple_New(0))
-                guard let filepathCString = PyString_AsString(filepathObject) else {
-                    observer.send(error: YoutubeLoadingError(message: "getFinalFilepath return nil"))
-                    return
-                }
-                guard let filepath = String(cString: filepathCString, encoding: .utf8) else {
-                    observer.send(error: YoutubeLoadingError(message: "getFinalFilepath return broken string"))
-                    return
-                }
-                
-                observer.send(value: URL(fileURLWithPath: filepath))
-                observer.sendCompleted()
             }
+            
             return nil
         }
     }

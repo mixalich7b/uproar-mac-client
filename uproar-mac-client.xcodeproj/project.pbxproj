@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		B22F32971E8AAD70006E9F8B /* UproarClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22F32961E8AAD70006E9F8B /* UproarClient.swift */; };
+		B22F329B1E8C7CE7006E9F8B /* UproarUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22F329A1E8C7CE7006E9F8B /* UproarUpdate.swift */; };
+		B22F329D1E8C815E006E9F8B /* UproarContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22F329C1E8C815E006E9F8B /* UproarContent.swift */; };
 		B2A0F0DC1E89BAC0002C5160 /* Downloader.py in Resources */ = {isa = PBXBuildFile; fileRef = B2A0F0D21E89BAC0002C5160 /* Downloader.py */; };
 		B2A0F0DD1E89BAC0002C5160 /* youtube_dl.zip in Resources */ = {isa = PBXBuildFile; fileRef = B2A0F0D31E89BAC0002C5160 /* youtube_dl.zip */; };
 		B2A0F0DE1E89BAC0002C5160 /* YoutubeLoaderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A0F0D51E89BAC0002C5160 /* YoutubeLoaderService.swift */; };
@@ -28,6 +30,8 @@
 		86651435063EF30B9E256BF4 /* Pods-uproar-mac-client.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-uproar-mac-client.debug.xcconfig"; path = "Pods/Target Support Files/Pods-uproar-mac-client/Pods-uproar-mac-client.debug.xcconfig"; sourceTree = "<group>"; };
 		A137BB96808D92C5AC7B1BC9 /* Pods-uproar-mac-client.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-uproar-mac-client.release.xcconfig"; path = "Pods/Target Support Files/Pods-uproar-mac-client/Pods-uproar-mac-client.release.xcconfig"; sourceTree = "<group>"; };
 		B22F32961E8AAD70006E9F8B /* UproarClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UproarClient.swift; sourceTree = "<group>"; };
+		B22F329A1E8C7CE7006E9F8B /* UproarUpdate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UproarUpdate.swift; sourceTree = "<group>"; };
+		B22F329C1E8C815E006E9F8B /* UproarContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UproarContent.swift; sourceTree = "<group>"; };
 		B2A0F0D21E89BAC0002C5160 /* Downloader.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = Downloader.py; sourceTree = "<group>"; };
 		B2A0F0D31E89BAC0002C5160 /* youtube_dl.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = youtube_dl.zip; sourceTree = "<group>"; };
 		B2A0F0D51E89BAC0002C5160 /* YoutubeLoaderService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YoutubeLoaderService.swift; sourceTree = "<group>"; };
@@ -104,6 +108,8 @@
 			children = (
 				B2A0F0E31E89BB1D002C5160 /* YoutubeLoadingError.swift */,
 				B2A0F0E51E89CDCB002C5160 /* AssetError.swift */,
+				B22F329A1E8C7CE7006E9F8B /* UproarUpdate.swift */,
+				B22F329C1E8C815E006E9F8B /* UproarContent.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -276,6 +282,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B22F329B1E8C7CE7006E9F8B /* UproarUpdate.swift in Sources */,
 				B2A0F0E01E89BAC0002C5160 /* ViewController.swift in Sources */,
 				B2A0F0E41E89BB1D002C5160 /* YoutubeLoadingError.swift in Sources */,
 				B2A0F0E61E89CDCB002C5160 /* AssetError.swift in Sources */,
@@ -284,6 +291,7 @@
 				B22F32971E8AAD70006E9F8B /* UproarClient.swift in Sources */,
 				B2A0F0DE1E89BAC0002C5160 /* YoutubeLoaderService.swift in Sources */,
 				B2A0F0DF1E89BAC0002C5160 /* PlayerView.swift in Sources */,
+				B22F329D1E8C815E006E9F8B /* UproarContent.swift in Sources */,
 				B2A0F0E11E89BAC0002C5160 /* ViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

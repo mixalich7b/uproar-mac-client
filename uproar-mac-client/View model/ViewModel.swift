@@ -18,9 +18,8 @@ class ViewModel: NSObject {
         "hasProtectedContent"
     ]
     
-    private let uproarClient = UproarClient()
-    
     private let youtubeLoaderService = YoutubeLoaderService()
+    private let uproarClient = UproarClient()
     
     private var videoAssetsQueue = [AVURLAsset]()
     
@@ -31,9 +30,18 @@ class ViewModel: NSObject {
     override init() {
         super.init()
         
-        SignalProducer(value: "https://www.youtube.com/watch?v=5po2VulU9-A")
+        SignalProducer(uproarClient.updateSignal)
+            .filterMap { update -> UproarContent? in
+                switch update {
+                case .addContent(let content): return content
+                }
+            }.filterMap { content -> String? in
+                switch content {
+                case .youtube(let url): return url
+                default: return Optional.none
+                }
+            }
             .flatMap(.merge, transform: download)
-            .observe(on: UIScheduler())
             .start(handleAssetEvent)
     }
     
@@ -73,6 +81,7 @@ class ViewModel: NSObject {
                 return Signal { (observer) -> Disposable? in
                     asset.loadValuesAsynchronously(forKeys: ViewModel.assetKeysRequiredToPlay) {
                         observer.send(value: asset)
+                        observer.sendCompleted()
                     }
                     return nil
                 }

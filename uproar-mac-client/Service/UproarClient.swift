@@ -23,6 +23,8 @@ class UproarClient: MQTTSessionDelegate {
     private let isManualDisconnected: Atomic<Bool> = Atomic(false)
     private let (disconnectSignal, disconnectObserver) = Signal<(), NoError>.pipe()
     
+    let (updateSignal, updateObserver) = Signal<UproarUpdate, NoError>.pipe()
+    
     init() {
         let subscribeToDeviceChannelSignal = self.subscribeToDeviceChannel()
         let sendRegisterSignal = self.sendRegister()
@@ -153,7 +155,12 @@ class UproarClient: MQTTSessionDelegate {
         let message = String(data: data, encoding: .utf8)!
         print("\(topic):\n\(message)")
         
-        
+        do {
+            let update = try UproarUpdate(JSONString: message)
+            updateObserver.send(value: update)
+        } catch let error {
+            print("\(error)")
+        }
     }
     
     func mqttSocketErrorOccurred(session: MQTTSession) {

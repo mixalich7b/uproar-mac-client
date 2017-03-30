@@ -9,5 +9,6 @@ target 'uproar-mac-client' do
         pod 'SwiftMQTT'
         pod 'ReactiveCocoa', '~> 5.0.1'
         pod 'SSZipArchive'
+        pod 'ObjectMapper', '~> 2.2'
 end
 
