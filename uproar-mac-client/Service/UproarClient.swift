@@ -14,8 +14,6 @@ class UproarClient: MQTTSessionDelegate {
     
     private static let deviceInChannelName = "device_in_\(Constants.token)"
     
-    private(set) lazy var sendBoringAction: Action<(), (), AnyError> = self.createSendBoringAction()
-    
     private lazy var mqttSession: MQTTSession = self.createMqttSession()
     
     private let isRegistered: Atomic<Bool> = Atomic(false)
@@ -80,35 +78,47 @@ class UproarClient: MQTTSessionDelegate {
     }
     
     private func sendRegister() -> SignalProducer<(), AnyError> {
+        if isRegistered.value {
+            print("Has registered earlier")
+            return SignalProducer(value: ())
+        } else {
+            return send(message: Constants.token.data(using: .utf8)!, toChannel: "registry")
+                .on(failed: { _ in
+                    print("Couldn't register token")
+                }, value: {[weak self] _ in
+                    print("Registered!")
+                    if let strongSelf = self {
+                        strongSelf.isRegistered.value = true
+                    }
+                })
+        }
+    }
+    
+    func send(message: UproarMessage) -> SignalProducer<(), AnyError> {
+        let messageData = message.toJSONString()!.data(using: .utf8)!
+        return send(message: messageData, toChannel: "device_out")
+            .on(failed: { error in
+                print("Couldn't send \(message.debugDescription)\n\(error.localizedDescription)")
+            }, value: { _ in
+                print("Sent message: \(message.debugDescription)")
+            })
+    }
+    
+    private func send(message: Data, toChannel channel: String) -> SignalProducer<(), AnyError> {
         return SignalProducer {[weak self] (observer, disposable) in
             guard let strongSelf = self else {
                 observer.sendCompleted()
                 return
             }
-            if strongSelf.isRegistered.value {
-                print("Has registered earlier")
-                observer.send(value: ())
-                observer.sendCompleted()
-            } else {
-                strongSelf.mqttSession.publish(Constants.token.data(using: .utf8)!, in: "registry", delivering: .atLeastOnce, retain: false) { (succeeded, error) in
-                    if succeeded {
-                        print("Registered!")
-                        if let strongSelf = self {
-                            strongSelf.isRegistered.value = true
-                        }
-                        observer.send(value: ())
-                        observer.sendCompleted()
-                    } else {
-                        print("Couldn't register token")
-                        observer.send(error: AnyError(error))
-                    }
+            strongSelf.mqttSession.publish(message, in: channel, delivering: .atLeastOnce, retain: false) { (succeeded, error) in
+                if succeeded {
+                    observer.send(value: ())
+                    observer.sendCompleted()
+                } else {
+                    observer.send(error: AnyError(error))
                 }
             }
         }
-    }
-    
-    deinit {
-        disconnect()
     }
     
     private func createMqttSession() -> MQTTSession {
@@ -118,29 +128,6 @@ class UproarClient: MQTTSessionDelegate {
         session.password = Constants.token
         session.delegate = self
         return session
-    }
-    
-    private func createSendBoringAction() -> Action<(), (), AnyError> {
-        return Action {[weak self] () -> SignalProducer<(), AnyError> in
-            return SignalProducer { (observer, disposable) in
-                guard let strongSelf = self else {
-                    observer.sendCompleted()
-                    return
-                }
-                let boringMessage = ["token": Constants.token, "update": "boring"]
-                let messageData = try! JSONSerialization.data(withJSONObject: boringMessage, options: [])
-                strongSelf.mqttSession.publish(messageData, in: "device_out", delivering: .atLeastOnce, retain: false, completion: { (succeeded, error) in
-                    if succeeded {
-                        print("Boring sent")
-                        observer.send(value: ())
-                        observer.sendCompleted()
-                    } else {
-                        print("Couldn't send 'boring'")
-                        observer.send(error: AnyError(error))
-                    }
-                })
-            }
-        }
     }
     
     private func disconnect() {
@@ -165,9 +152,6 @@ class UproarClient: MQTTSessionDelegate {
     
     func mqttSocketErrorOccurred(session: MQTTSession) {
         print("Socket error occured in \(session)")
-        if !isManualDisconnected.value {
-            disconnectObserver.send(value: ())
-        }
     }
     
     func mqttDidDisconnect(session: MQTTSession) {
@@ -175,5 +159,9 @@ class UproarClient: MQTTSessionDelegate {
         if !isManualDisconnected.value {
             disconnectObserver.send(value: ())
         }
+    }
+    
+    deinit {
+        disconnect()
     }
 }

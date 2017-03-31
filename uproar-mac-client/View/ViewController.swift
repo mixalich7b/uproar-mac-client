@@ -64,7 +64,7 @@ class ViewController: NSViewController {
     }
     
     private func handleErrorWithMessage(_ message: String?, error: Error? = nil) {
-        print("Error occured with message: \(message), error: \(error).")
+        print("Error occured with message: \(String(describing: message)), error: \(String(describing: error?.localizedDescription)).")
     }
 }
 

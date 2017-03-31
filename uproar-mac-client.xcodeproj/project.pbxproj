@@ -8,16 +8,18 @@
 
 /* Begin PBXBuildFile section */
 		B22F32971E8AAD70006E9F8B /* UproarClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22F32961E8AAD70006E9F8B /* UproarClient.swift */; };
-		B22F329B1E8C7CE7006E9F8B /* UproarUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22F329A1E8C7CE7006E9F8B /* UproarUpdate.swift */; };
-		B22F329D1E8C815E006E9F8B /* UproarContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22F329C1E8C815E006E9F8B /* UproarContent.swift */; };
+		B281764A1E8D8EDB0042848A /* AssetError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28176431E8D8EDB0042848A /* AssetError.swift */; };
+		B281764B1E8D8EDB0042848A /* YoutubeLoadingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28176441E8D8EDB0042848A /* YoutubeLoadingError.swift */; };
+		B281764C1E8D8EDB0042848A /* UproarMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28176461E8D8EDB0042848A /* UproarMessage.swift */; };
+		B281764D1E8D8EDB0042848A /* UproarContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28176481E8D8EDB0042848A /* UproarContent.swift */; };
+		B281764E1E8D8EDB0042848A /* UproarUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28176491E8D8EDB0042848A /* UproarUpdate.swift */; };
+		B28176501E8D8F1D0042848A /* UproarTrackStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B281764F1E8D8F1D0042848A /* UproarTrackStatus.swift */; };
 		B2A0F0DC1E89BAC0002C5160 /* Downloader.py in Resources */ = {isa = PBXBuildFile; fileRef = B2A0F0D21E89BAC0002C5160 /* Downloader.py */; };
 		B2A0F0DD1E89BAC0002C5160 /* youtube_dl.zip in Resources */ = {isa = PBXBuildFile; fileRef = B2A0F0D31E89BAC0002C5160 /* youtube_dl.zip */; };
 		B2A0F0DE1E89BAC0002C5160 /* YoutubeLoaderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A0F0D51E89BAC0002C5160 /* YoutubeLoaderService.swift */; };
 		B2A0F0DF1E89BAC0002C5160 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A0F0D71E89BAC0002C5160 /* PlayerView.swift */; };
 		B2A0F0E01E89BAC0002C5160 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A0F0D81E89BAC0002C5160 /* ViewController.swift */; };
 		B2A0F0E11E89BAC0002C5160 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A0F0DA1E89BAC0002C5160 /* ViewModel.swift */; };
-		B2A0F0E41E89BB1D002C5160 /* YoutubeLoadingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A0F0E31E89BB1D002C5160 /* YoutubeLoadingError.swift */; };
-		B2A0F0E61E89CDCB002C5160 /* AssetError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A0F0E51E89CDCB002C5160 /* AssetError.swift */; };
 		B2C9AE4C1E7213BA00CA4E07 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C9AE4B1E7213BA00CA4E07 /* AppDelegate.swift */; };
 		B2C9AE501E7213BA00CA4E07 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B2C9AE4F1E7213BA00CA4E07 /* Assets.xcassets */; };
 		B2C9AE531E7213BA00CA4E07 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B2C9AE511E7213BA00CA4E07 /* Main.storyboard */; };
@@ -30,16 +32,18 @@
 		86651435063EF30B9E256BF4 /* Pods-uproar-mac-client.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-uproar-mac-client.debug.xcconfig"; path = "Pods/Target Support Files/Pods-uproar-mac-client/Pods-uproar-mac-client.debug.xcconfig"; sourceTree = "<group>"; };
 		A137BB96808D92C5AC7B1BC9 /* Pods-uproar-mac-client.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-uproar-mac-client.release.xcconfig"; path = "Pods/Target Support Files/Pods-uproar-mac-client/Pods-uproar-mac-client.release.xcconfig"; sourceTree = "<group>"; };
 		B22F32961E8AAD70006E9F8B /* UproarClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UproarClient.swift; sourceTree = "<group>"; };
-		B22F329A1E8C7CE7006E9F8B /* UproarUpdate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UproarUpdate.swift; sourceTree = "<group>"; };
-		B22F329C1E8C815E006E9F8B /* UproarContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UproarContent.swift; sourceTree = "<group>"; };
+		B28176431E8D8EDB0042848A /* AssetError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetError.swift; sourceTree = "<group>"; };
+		B28176441E8D8EDB0042848A /* YoutubeLoadingError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YoutubeLoadingError.swift; sourceTree = "<group>"; };
+		B28176461E8D8EDB0042848A /* UproarMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UproarMessage.swift; sourceTree = "<group>"; };
+		B28176481E8D8EDB0042848A /* UproarContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UproarContent.swift; sourceTree = "<group>"; };
+		B28176491E8D8EDB0042848A /* UproarUpdate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UproarUpdate.swift; sourceTree = "<group>"; };
+		B281764F1E8D8F1D0042848A /* UproarTrackStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UproarTrackStatus.swift; sourceTree = "<group>"; };
 		B2A0F0D21E89BAC0002C5160 /* Downloader.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = Downloader.py; sourceTree = "<group>"; };
 		B2A0F0D31E89BAC0002C5160 /* youtube_dl.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = youtube_dl.zip; sourceTree = "<group>"; };
 		B2A0F0D51E89BAC0002C5160 /* YoutubeLoaderService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YoutubeLoaderService.swift; sourceTree = "<group>"; };
 		B2A0F0D71E89BAC0002C5160 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
 		B2A0F0D81E89BAC0002C5160 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		B2A0F0DA1E89BAC0002C5160 /* ViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
-		B2A0F0E31E89BB1D002C5160 /* YoutubeLoadingError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YoutubeLoadingError.swift; sourceTree = "<group>"; };
-		B2A0F0E51E89CDCB002C5160 /* AssetError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetError.swift; sourceTree = "<group>"; };
 		B2C9AE481E7213BA00CA4E07 /* uproar-mac-client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "uproar-mac-client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2C9AE4B1E7213BA00CA4E07 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B2C9AE4F1E7213BA00CA4E07 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -66,6 +70,33 @@
 				3B87982ED378375C60CA4EB9 /* Pods_uproar_mac_client.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B28176421E8D8EDB0042848A /* Error */ = {
+			isa = PBXGroup;
+			children = (
+				B28176431E8D8EDB0042848A /* AssetError.swift */,
+				B28176441E8D8EDB0042848A /* YoutubeLoadingError.swift */,
+			);
+			path = Error;
+			sourceTree = "<group>";
+		};
+		B28176451E8D8EDB0042848A /* Message */ = {
+			isa = PBXGroup;
+			children = (
+				B28176461E8D8EDB0042848A /* UproarMessage.swift */,
+				B281764F1E8D8F1D0042848A /* UproarTrackStatus.swift */,
+			);
+			path = Message;
+			sourceTree = "<group>";
+		};
+		B28176471E8D8EDB0042848A /* Update */ = {
+			isa = PBXGroup;
+			children = (
+				B28176491E8D8EDB0042848A /* UproarUpdate.swift */,
+				B28176481E8D8EDB0042848A /* UproarContent.swift */,
+			);
+			path = Update;
 			sourceTree = "<group>";
 		};
 		B2A0F0D11E89BAC0002C5160 /* Resources */ = {
@@ -106,10 +137,9 @@
 		B2A0F0E21E89BAE2002C5160 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				B2A0F0E31E89BB1D002C5160 /* YoutubeLoadingError.swift */,
-				B2A0F0E51E89CDCB002C5160 /* AssetError.swift */,
-				B22F329A1E8C7CE7006E9F8B /* UproarUpdate.swift */,
-				B22F329C1E8C815E006E9F8B /* UproarContent.swift */,
+				B28176421E8D8EDB0042848A /* Error */,
+				B28176451E8D8EDB0042848A /* Message */,
+				B28176471E8D8EDB0042848A /* Update */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -282,16 +312,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B22F329B1E8C7CE7006E9F8B /* UproarUpdate.swift in Sources */,
 				B2A0F0E01E89BAC0002C5160 /* ViewController.swift in Sources */,
-				B2A0F0E41E89BB1D002C5160 /* YoutubeLoadingError.swift in Sources */,
-				B2A0F0E61E89CDCB002C5160 /* AssetError.swift in Sources */,
 				B2C9AE4C1E7213BA00CA4E07 /* AppDelegate.swift in Sources */,
 				B2C9AE5D1E721A4400CA4E07 /* Constants.swift in Sources */,
 				B22F32971E8AAD70006E9F8B /* UproarClient.swift in Sources */,
+				B281764B1E8D8EDB0042848A /* YoutubeLoadingError.swift in Sources */,
+				B281764E1E8D8EDB0042848A /* UproarUpdate.swift in Sources */,
+				B281764D1E8D8EDB0042848A /* UproarContent.swift in Sources */,
+				B28176501E8D8F1D0042848A /* UproarTrackStatus.swift in Sources */,
 				B2A0F0DE1E89BAC0002C5160 /* YoutubeLoaderService.swift in Sources */,
+				B281764C1E8D8EDB0042848A /* UproarMessage.swift in Sources */,
+				B281764A1E8D8EDB0042848A /* AssetError.swift in Sources */,
 				B2A0F0DF1E89BAC0002C5160 /* PlayerView.swift in Sources */,
-				B22F329D1E8C815E006E9F8B /* UproarContent.swift in Sources */,
 				B2A0F0E11E89BAC0002C5160 /* ViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

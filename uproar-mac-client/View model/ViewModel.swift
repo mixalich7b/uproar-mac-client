@@ -21,9 +21,9 @@ class ViewModel: NSObject {
     private let youtubeLoaderService = YoutubeLoaderService()
     private let uproarClient = UproarClient()
     
-    private var videoAssetsQueue = [AVURLAsset]()
+    private var videoAssetsQueue = [(AVURLAsset, Int, Int, Int)]()
     
-    private lazy var enqueueAssetAction: Action<AVURLAsset, (), NoError> = self.enqueueAsset()
+    private lazy var enqueueAssetAction: Action<(AVURLAsset, Int, Int, Int), (), NoError> = self.enqueueAsset()
     private(set) lazy var playNextAction: Action<(), (), NoError> = { Action { SignalProducer(value: $0) } }()
     private(set) lazy var nextVideoAssetSignalProducer: SignalProducer<AVURLAsset, NoError> = self.nextVideoAsset()
     
@@ -35,22 +35,17 @@ class ViewModel: NSObject {
                 switch update {
                 case .addContent(let content): return content
                 }
-            }.filterMap { content -> String? in
-                switch content {
-                case .youtube(let url): return url
-                default: return Optional.none
-                }
             }
             .flatMap(.merge, transform: download)
             .start(handleAssetEvent)
     }
     
-    private func enqueueAsset() -> Action<AVURLAsset, (), NoError> {
+    private func enqueueAsset() -> Action<(AVURLAsset, Int, Int, Int), (), NoError> {
         return Action {[weak self] (asset) -> SignalProducer<(), NoError> in
             guard let strongSelf = self else {
                 return SignalProducer.empty
             }
-            
+            strongSelf.update(status: .queue(asset.1, asset.2, asset.3))
             strongSelf.videoAssetsQueue.append(asset)
             return SignalProducer(value: ())
         }
@@ -68,19 +63,39 @@ class ViewModel: NSObject {
                     guard let strongSelf = self else {
                         return SignalProducer.empty
                     }
-                    
-                    return SignalProducer(value: strongSelf.videoAssetsQueue.removeFirst())
+                    let asset = strongSelf.videoAssetsQueue.removeFirst()
+                    strongSelf.update(status: .playing(asset.1, asset.2, asset.3))
+                    return SignalProducer(value: asset.0)
                 }
         }
     }
     
-    private func download(_ urlString: String) -> Signal<AVURLAsset, YoutubeLoadingError> {
+    private func download(_ content: UproarContent) -> Signal<(AVURLAsset, Int, Int, Int), YoutubeLoadingError> {
+        let urlString: String
+        let orig: Int
+        let messageId: Int
+        let chatId: Int
+        switch content {
+        case .youtube(let _urlString, let _orig, let _messageId, let _chatId):
+            urlString = _urlString
+            orig = _orig
+            messageId = _messageId
+            chatId = _chatId
+            break
+        case .audio(let _urlString, let _orig, let _messageId, let _chatId):
+            urlString = _urlString
+            orig = _orig
+            messageId = _messageId
+            chatId = _chatId
+            break
+        }
+        self.update(status: .download(orig, messageId, chatId))
         return self.youtubeLoaderService.downloadVideo(by: URL(string: urlString)!)
-            .flatMap(.latest) { (localVideoUrl) -> Signal<AVURLAsset, YoutubeLoadingError> in
+            .flatMap(.latest) { (localVideoUrl) -> Signal<(AVURLAsset, Int, Int, Int), YoutubeLoadingError> in
                 let asset = AVURLAsset(url: localVideoUrl)
                 return Signal { (observer) -> Disposable? in
                     asset.loadValuesAsynchronously(forKeys: ViewModel.assetKeysRequiredToPlay) {
-                        observer.send(value: asset)
+                        observer.send(value: (asset, orig, messageId, chatId))
                         observer.sendCompleted()
                     }
                     return nil
@@ -88,21 +103,23 @@ class ViewModel: NSObject {
         }
     }
     
-    private func handleAssetEvent(_ event: Event<AVURLAsset, YoutubeLoadingError>) {
+    private func handleAssetEvent(_ event: Event<(AVURLAsset, Int, Int, Int), YoutubeLoadingError>) {
         switch event {
         case .value(let loadedAsset):
             do {
-                try validate(asset: loadedAsset)
+                try validate(asset: loadedAsset.0)
                 enqueueAssetAction.apply(loadedAsset).start()
             } catch AssetError.failedKey(let key, let error) {
                 let stringFormat = NSLocalizedString("error.asset_key_%@_failed.description", comment: "Can't use this AVAsset because one of it's keys failed to load")
                 let message = String.localizedStringWithFormat(stringFormat, key)
                 handleErrorWithMessage(message, error: error)
-                
+                self.update(status: .skip(loadedAsset.1, loadedAsset.2, loadedAsset.3))
             } catch AssetError.notPlayable {
                 let message = NSLocalizedString("error.asset_not_playable.description", comment: "Can't use this AVAsset because it isn't playable or has protected content")
                 handleErrorWithMessage(message)
+                self.update(status: .skip(loadedAsset.1, loadedAsset.2, loadedAsset.3))
             } catch {
+                self.update(status: .skip(loadedAsset.1, loadedAsset.2, loadedAsset.3))
             }
             break
         case .failed(let error):
@@ -127,6 +144,10 @@ class ViewModel: NSObject {
     }
     
     private func handleErrorWithMessage(_ message: String?, error: Error? = nil) {
-        print("Error occured with message: \(message), error: \(error).")
+        print("Error occured with message: \(String(describing: message)), error: \(String(describing: error?.localizedDescription)).")
+    }
+    
+    private func update(status: UproarTrackStatus) {
+        self.uproarClient.send(message: .trackStatus(status, Constants.token)).start()
     }
 }

@@ -10,23 +10,27 @@ import youtube_dl
 
 finalFilepath = None
 
-def getFinalFilepath():
-    return finalFilepath
+def pollFinalFilepath():
+    global finalFilepath
+    result = finalFilepath
+    finalFilepath = None
+    return result
 
 def progress_hooks(progress):
     global finalFilepath
     if progress['status'] == 'finished':
         finalFilepath = progress['filename']
-        print('Downloaded: %s' % getFinalFilepath())
+        print('Downloaded: %s' % finalFilepath)
 
-ydl_opts = {
-    'noplaylist': True,
-    'forcefilename': True,
-    'restrictfilenames': True,
-    'outtmpl': '/Users/k.tupitsin/Library/Application Support/uproar-mac/videos/%(id)s.%(ext)s',
-    'writeinfojson': True,
-    'progress_hooks': [progress_hooks]
-}
-with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-    ydl.download(sys.argv)
-
+def download(url):
+    ydl_opts = {
+        'noplaylist': True,
+        'forcefilename': True,
+        'restrictfilenames': True,
+        'outtmpl': '/Users/k.tupitsin/Library/Application Support/uproar-mac/videos/%(id)s.%(ext)s',
+        'writeinfojson': True,
+        'format': 'mp4',
+        'progress_hooks': [progress_hooks]
+    }
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        ydl.download([url])

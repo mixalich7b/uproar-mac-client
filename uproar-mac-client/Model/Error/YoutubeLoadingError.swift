@@ -8,6 +8,12 @@
 
 import Foundation
 
-struct YoutubeLoadingError: Error {
+struct YoutubeLoadingError: LocalizedError {
     let message: String
+    
+    var errorDescription: String? {
+        get {
+            return message
+        }
+    }
 }
