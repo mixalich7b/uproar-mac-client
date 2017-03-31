@@ -22,6 +22,7 @@ class ViewModel: NSObject {
     private let uproarClient = UproarClient()
     
     private var videoAssetsQueue = [(AVURLAsset, Int, Int, Int)]()
+    private let lastDequeued: Atomic<(AVURLAsset, Int, Int, Int)?> = Atomic(nil)
     
     private lazy var enqueueAssetAction: Action<(AVURLAsset, Int, Int, Int), (), NoError> = self.enqueueAsset()
     private(set) lazy var playNextAction: Action<(), (), NoError> = { Action { SignalProducer(value: $0) } }()
@@ -58,12 +59,18 @@ class ViewModel: NSObject {
                     return SignalProducer.empty
                 }
                 
+                if let prevAsset = strongSelf.lastDequeued.value {
+                    strongSelf.update(status: .done(prevAsset.1, prevAsset.2, prevAsset.3))
+                }
+                
                 let waitAsset = strongSelf.videoAssetsQueue.isEmpty ? SignalProducer(strongSelf.enqueueAssetAction.values.take(first: 1)) : SignalProducer(value: ())
                 return waitAsset.flatMap(.latest) { _ -> SignalProducer<AVURLAsset, NoError> in
                     guard let strongSelf = self else {
                         return SignalProducer.empty
                     }
+                    
                     let asset = strongSelf.videoAssetsQueue.removeFirst()
+                    strongSelf.lastDequeued.value = asset
                     strongSelf.update(status: .playing(asset.1, asset.2, asset.3))
                     return SignalProducer(value: asset.0)
                 }

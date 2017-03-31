@@ -20,16 +20,15 @@ class ViewController: NSViewController {
     private lazy var playerItemStatusProperty: DynamicProperty<Int> = {
         DynamicProperty(object: self, keyPath: #keyPath(ViewController.player.currentItem.status))
     }()
-    private var playerItemStatusDisposable: Disposable?
     
-    override func viewWillAppear() {
-        super.viewWillAppear()
+    override func viewDidLoad() {
+        super.viewDidLoad()
         
         if let playerView = self.view as? PlayerView {
             playerView.player = player
         }
         
-        self.playerItemStatusDisposable = playerItemStatusProperty.signal.observeValues {[weak self] playerItemStatus in
+        playerItemStatusProperty.signal.observeValues {[weak self] playerItemStatus in
             let newStatus: AVPlayerItemStatus = playerItemStatus.flatMap { AVPlayerItemStatus(rawValue: $0) } ?? .unknown
             
             guard let strongSelf = self else {
@@ -37,16 +36,13 @@ class ViewController: NSViewController {
             }
             switch newStatus {
             case .failed:
+                strongSelf.viewModel.playNextAction.apply(()).start()
                 strongSelf.handleErrorWithMessage(strongSelf.player.currentItem?.error?.localizedDescription, error:strongSelf.player.currentItem?.error)
-                break
-            case .readyToPlay:
                 break
             default:
                 break
             }
         }
-        
-        player.play()
         
         viewModel.nextVideoAssetSignalProducer.startWithValues {[weak self] (asset) in
             let playerItem = AVPlayerItem(asset: asset)
@@ -55,16 +51,28 @@ class ViewController: NSViewController {
         viewModel.playNextAction.apply(()).start()
     }
     
+    override func viewDidAppear() {
+        super.viewDidAppear()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(playerItemDidReachEnd), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
+        
+        player.play()
+    }
+    
     override func viewDidDisappear() {
         super.viewDidDisappear()
         
         player.pause()
-        
-        self.playerItemStatusDisposable?.dispose()
+        NotificationCenter.default.removeObserver(self)
     }
     
     private func handleErrorWithMessage(_ message: String?, error: Error? = nil) {
         print("Error occured with message: \(String(describing: message)), error: \(String(describing: error?.localizedDescription)).")
+    }
+    
+    @objc
+    private func playerItemDidReachEnd() {
+        viewModel.playNextAction.apply(()).start()
     }
 }
 
