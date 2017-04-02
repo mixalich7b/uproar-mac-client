@@ -47,23 +47,13 @@ class ViewController: NSViewController {
         viewModel.nextVideoAssetSignalProducer.startWithValues {[weak self] (asset) in
             let playerItem = AVPlayerItem(asset: asset)
             self?.player.replaceCurrentItem(with: playerItem)
+            if self?.player.rate ?? 0.0 < 0.7 {
+               self?.player.play()
+            }
         }
         viewModel.playNextAction.apply(()).start()
-    }
-    
-    override func viewDidAppear() {
-        super.viewDidAppear()
         
         NotificationCenter.default.addObserver(self, selector: #selector(playerItemDidReachEnd), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
-        
-        player.play()
-    }
-    
-    override func viewDidDisappear() {
-        super.viewDidDisappear()
-        
-        player.pause()
-        NotificationCenter.default.removeObserver(self)
     }
     
     private func handleErrorWithMessage(_ message: String?, error: Error? = nil) {
@@ -73,6 +63,11 @@ class ViewController: NSViewController {
     @objc
     private func playerItemDidReachEnd() {
         viewModel.playNextAction.apply(()).start()
+    }
+    
+    deinit {
+        player.pause()
+        NotificationCenter.default.removeObserver(self)
     }
 }
 

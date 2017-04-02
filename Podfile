@@ -6,9 +6,8 @@ workspace 'uproar-mac-client.xcworkspace'
 target 'uproar-mac-client' do
 	project 'uproar-mac-client.xcodeproj'
 
-        pod 'SwiftMQTT'
-        pod 'ReactiveCocoa', '~> 5.0.1'
-        pod 'SSZipArchive'
-        pod 'ObjectMapper', '~> 2.2'
+	pod 'SwiftMQTT', :git => 'https://github.com/mixalich7b/SwiftMQTT.git', :branch => 'HEAD'
+	pod 'ReactiveCocoa', '~> 5.0.1'
+	pod 'SSZipArchive'
+	pod 'ObjectMapper', '~> 2.2'
 end
-

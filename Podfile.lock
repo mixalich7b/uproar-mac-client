@@ -12,7 +12,17 @@ DEPENDENCIES:
   - ObjectMapper (~> 2.2)
   - ReactiveCocoa (~> 5.0.1)
   - SSZipArchive
-  - SwiftMQTT
+  - SwiftMQTT (from `https://github.com/mixalich7b/SwiftMQTT.git`, branch `HEAD`)
+
+EXTERNAL SOURCES:
+  SwiftMQTT:
+    :branch: HEAD
+    :git: https://github.com/mixalich7b/SwiftMQTT.git
+
+CHECKOUT OPTIONS:
+  SwiftMQTT:
+    :commit: 432d42f05ea36eb763861310690422a0006dcd64
+    :git: https://github.com/mixalich7b/SwiftMQTT.git
 
 SPEC CHECKSUMS:
   ObjectMapper: fb30f71e08470d1e5a20b199fafe1246281db898
@@ -22,6 +32,6 @@ SPEC CHECKSUMS:
   SSZipArchive: 63f8e11cfcc33e03e4cd666b4359ea8bd6facd0c
   SwiftMQTT: 1223cdf3056cd9211112e3f136aa221125b457e1
 
-PODFILE CHECKSUM: d8af1bcc704e3ff3c704285e896fba4ec194e8bd
+PODFILE CHECKSUM: 80e9c3b80be3083e3d9b9d234f46f34279beca1c
 
 COCOAPODS: 1.2.0
