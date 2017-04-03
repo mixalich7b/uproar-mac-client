@@ -46,8 +46,10 @@ class ViewModel: NSObject {
             guard let strongSelf = self else {
                 return SignalProducer.empty
             }
+            if !strongSelf.videoAssetsQueue.contains(where: { $0.0.url == asset.0.url }) {
+                strongSelf.videoAssetsQueue.append(asset)
+            }
             strongSelf.update(status: .queue(asset.1, asset.2, asset.3))
-            strongSelf.videoAssetsQueue.append(asset)
             return SignalProducer(value: ())
         }
     }
