@@ -8,10 +8,17 @@
 
 /* Begin PBXBuildFile section */
 		B22F32971E8AAD70006E9F8B /* UproarClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22F32961E8AAD70006E9F8B /* UproarClient.swift */; };
+		B2588B4E1E923410005ECA71 /* PlayerTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2588B4D1E923410005ECA71 /* PlayerTrack.swift */; };
+		B2588B5D1E9237A6005ECA71 /* PlayerAssetBasedTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2588B581E9237A6005ECA71 /* PlayerAssetBasedTrack.swift */; };
+		B2588B5E1E9237A6005ECA71 /* PlayerAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2588B591E9237A6005ECA71 /* PlayerAudio.swift */; };
+		B2588B5F1E9237A6005ECA71 /* PlayerVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2588B5A1E9237A6005ECA71 /* PlayerVideo.swift */; };
+		B2588B601E9237A6005ECA71 /* PlayerUrlBasedTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2588B5C1E9237A6005ECA71 /* PlayerUrlBasedTrack.swift */; };
+		B2588B631E923D8C005ECA71 /* UproarContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2588B621E923D8C005ECA71 /* UproarContent.swift */; };
+		B2588B651E923DBC005ECA71 /* UproarYoutubeVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2588B641E923DBC005ECA71 /* UproarYoutubeVideo.swift */; };
+		B2588B671E923DCF005ECA71 /* UproarAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2588B661E923DCF005ECA71 /* UproarAudio.swift */; };
 		B281764A1E8D8EDB0042848A /* AssetError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28176431E8D8EDB0042848A /* AssetError.swift */; };
 		B281764B1E8D8EDB0042848A /* YoutubeLoadingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28176441E8D8EDB0042848A /* YoutubeLoadingError.swift */; };
 		B281764C1E8D8EDB0042848A /* UproarMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28176461E8D8EDB0042848A /* UproarMessage.swift */; };
-		B281764D1E8D8EDB0042848A /* UproarContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28176481E8D8EDB0042848A /* UproarContent.swift */; };
 		B281764E1E8D8EDB0042848A /* UproarUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28176491E8D8EDB0042848A /* UproarUpdate.swift */; };
 		B28176501E8D8F1D0042848A /* UproarTrackStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B281764F1E8D8F1D0042848A /* UproarTrackStatus.swift */; };
 		B2A0F0DC1E89BAC0002C5160 /* Downloader.py in Resources */ = {isa = PBXBuildFile; fileRef = B2A0F0D21E89BAC0002C5160 /* Downloader.py */; };
@@ -32,10 +39,17 @@
 		86651435063EF30B9E256BF4 /* Pods-uproar-mac-client.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-uproar-mac-client.debug.xcconfig"; path = "Pods/Target Support Files/Pods-uproar-mac-client/Pods-uproar-mac-client.debug.xcconfig"; sourceTree = "<group>"; };
 		A137BB96808D92C5AC7B1BC9 /* Pods-uproar-mac-client.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-uproar-mac-client.release.xcconfig"; path = "Pods/Target Support Files/Pods-uproar-mac-client/Pods-uproar-mac-client.release.xcconfig"; sourceTree = "<group>"; };
 		B22F32961E8AAD70006E9F8B /* UproarClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UproarClient.swift; sourceTree = "<group>"; };
+		B2588B4D1E923410005ECA71 /* PlayerTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerTrack.swift; sourceTree = "<group>"; };
+		B2588B581E9237A6005ECA71 /* PlayerAssetBasedTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerAssetBasedTrack.swift; sourceTree = "<group>"; };
+		B2588B591E9237A6005ECA71 /* PlayerAudio.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerAudio.swift; sourceTree = "<group>"; };
+		B2588B5A1E9237A6005ECA71 /* PlayerVideo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerVideo.swift; sourceTree = "<group>"; };
+		B2588B5C1E9237A6005ECA71 /* PlayerUrlBasedTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerUrlBasedTrack.swift; sourceTree = "<group>"; };
+		B2588B621E923D8C005ECA71 /* UproarContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UproarContent.swift; sourceTree = "<group>"; };
+		B2588B641E923DBC005ECA71 /* UproarYoutubeVideo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UproarYoutubeVideo.swift; sourceTree = "<group>"; };
+		B2588B661E923DCF005ECA71 /* UproarAudio.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UproarAudio.swift; sourceTree = "<group>"; };
 		B28176431E8D8EDB0042848A /* AssetError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetError.swift; sourceTree = "<group>"; };
 		B28176441E8D8EDB0042848A /* YoutubeLoadingError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YoutubeLoadingError.swift; sourceTree = "<group>"; };
 		B28176461E8D8EDB0042848A /* UproarMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UproarMessage.swift; sourceTree = "<group>"; };
-		B28176481E8D8EDB0042848A /* UproarContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UproarContent.swift; sourceTree = "<group>"; };
 		B28176491E8D8EDB0042848A /* UproarUpdate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UproarUpdate.swift; sourceTree = "<group>"; };
 		B281764F1E8D8F1D0042848A /* UproarTrackStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UproarTrackStatus.swift; sourceTree = "<group>"; };
 		B2A0F0D21E89BAC0002C5160 /* Downloader.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = Downloader.py; sourceTree = "<group>"; };
@@ -72,6 +86,44 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		B2588B4C1E9233F7005ECA71 /* Player track */ = {
+			isa = PBXGroup;
+			children = (
+				B2588B4D1E923410005ECA71 /* PlayerTrack.swift */,
+				B2588B571E9237A6005ECA71 /* Asset based */,
+				B2588B5B1E9237A6005ECA71 /* URL based */,
+			);
+			path = "Player track";
+			sourceTree = "<group>";
+		};
+		B2588B571E9237A6005ECA71 /* Asset based */ = {
+			isa = PBXGroup;
+			children = (
+				B2588B581E9237A6005ECA71 /* PlayerAssetBasedTrack.swift */,
+				B2588B591E9237A6005ECA71 /* PlayerAudio.swift */,
+				B2588B5A1E9237A6005ECA71 /* PlayerVideo.swift */,
+			);
+			path = "Asset based";
+			sourceTree = "<group>";
+		};
+		B2588B5B1E9237A6005ECA71 /* URL based */ = {
+			isa = PBXGroup;
+			children = (
+				B2588B5C1E9237A6005ECA71 /* PlayerUrlBasedTrack.swift */,
+			);
+			path = "URL based";
+			sourceTree = "<group>";
+		};
+		B2588B611E923D75005ECA71 /* Content */ = {
+			isa = PBXGroup;
+			children = (
+				B2588B621E923D8C005ECA71 /* UproarContent.swift */,
+				B2588B661E923DCF005ECA71 /* UproarAudio.swift */,
+				B2588B641E923DBC005ECA71 /* UproarYoutubeVideo.swift */,
+			);
+			path = Content;
+			sourceTree = "<group>";
+		};
 		B28176421E8D8EDB0042848A /* Error */ = {
 			isa = PBXGroup;
 			children = (
@@ -93,8 +145,8 @@
 		B28176471E8D8EDB0042848A /* Update */ = {
 			isa = PBXGroup;
 			children = (
+				B2588B611E923D75005ECA71 /* Content */,
 				B28176491E8D8EDB0042848A /* UproarUpdate.swift */,
-				B28176481E8D8EDB0042848A /* UproarContent.swift */,
 			);
 			path = Update;
 			sourceTree = "<group>";
@@ -137,6 +189,7 @@
 		B2A0F0E21E89BAE2002C5160 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				B2588B4C1E9233F7005ECA71 /* Player track */,
 				B28176421E8D8EDB0042848A /* Error */,
 				B28176451E8D8EDB0042848A /* Message */,
 				B28176471E8D8EDB0042848A /* Update */,
@@ -317,14 +370,21 @@
 				B2C9AE5D1E721A4400CA4E07 /* Constants.swift in Sources */,
 				B22F32971E8AAD70006E9F8B /* UproarClient.swift in Sources */,
 				B281764B1E8D8EDB0042848A /* YoutubeLoadingError.swift in Sources */,
+				B2588B5F1E9237A6005ECA71 /* PlayerVideo.swift in Sources */,
 				B281764E1E8D8EDB0042848A /* UproarUpdate.swift in Sources */,
-				B281764D1E8D8EDB0042848A /* UproarContent.swift in Sources */,
+				B2588B651E923DBC005ECA71 /* UproarYoutubeVideo.swift in Sources */,
+				B2588B5D1E9237A6005ECA71 /* PlayerAssetBasedTrack.swift in Sources */,
+				B2588B4E1E923410005ECA71 /* PlayerTrack.swift in Sources */,
 				B28176501E8D8F1D0042848A /* UproarTrackStatus.swift in Sources */,
+				B2588B631E923D8C005ECA71 /* UproarContent.swift in Sources */,
 				B2A0F0DE1E89BAC0002C5160 /* YoutubeLoaderService.swift in Sources */,
+				B2588B601E9237A6005ECA71 /* PlayerUrlBasedTrack.swift in Sources */,
+				B2588B5E1E9237A6005ECA71 /* PlayerAudio.swift in Sources */,
 				B281764C1E8D8EDB0042848A /* UproarMessage.swift in Sources */,
 				B281764A1E8D8EDB0042848A /* AssetError.swift in Sources */,
 				B2A0F0DF1E89BAC0002C5160 /* PlayerView.swift in Sources */,
 				B2A0F0E11E89BAC0002C5160 /* ViewModel.swift in Sources */,
+				B2588B671E923DCF005ECA71 /* UproarAudio.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

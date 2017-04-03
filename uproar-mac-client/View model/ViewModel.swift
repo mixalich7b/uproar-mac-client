@@ -21,10 +21,10 @@ class ViewModel: NSObject {
     private let youtubeLoaderService = YoutubeLoaderService()
     private let uproarClient = UproarClient()
     
-    private var videoAssetsQueue = [(AVURLAsset, Int, Int, Int)]()
-    private let lastDequeued: Atomic<(AVURLAsset, Int, Int, Int)?> = Atomic(nil)
+    private var playerTrackQueue = [PlayerAssetBasedTrack]()
+    private let lastDequeued: Atomic<PlayerAssetBasedTrack?> = Atomic(nil)
     
-    private lazy var enqueueAssetAction: Action<(AVURLAsset, Int, Int, Int), (), NoError> = self.enqueueAsset()
+    private lazy var enqueueTrackAction: Action<PlayerAssetBasedTrack, (), NoError> = self.enqueueTrack()
     private(set) lazy var playNextAction: Action<(), (), NoError> = { Action { SignalProducer(value: $0) } }()
     private(set) lazy var nextVideoAssetSignalProducer: SignalProducer<AVURLAsset, NoError> = self.nextVideoAsset()
     
@@ -38,18 +38,18 @@ class ViewModel: NSObject {
                 }
             }
             .flatMap(.merge, transform: download)
-            .start(handleAssetEvent)
+            .start(handleTrack)
     }
     
-    private func enqueueAsset() -> Action<(AVURLAsset, Int, Int, Int), (), NoError> {
-        return Action {[weak self] (asset) -> SignalProducer<(), NoError> in
+    private func enqueueTrack() -> Action<PlayerAssetBasedTrack, (), NoError> {
+        return Action {[weak self] (playerTrack) -> SignalProducer<(), NoError> in
             guard let strongSelf = self else {
                 return SignalProducer.empty
             }
-            if !strongSelf.videoAssetsQueue.contains(where: { $0.0.url == asset.0.url }) {
-                strongSelf.videoAssetsQueue.append(asset)
+            if !strongSelf.playerTrackQueue.contains(where: { $0.asset.url == playerTrack.asset.url }) {
+                strongSelf.playerTrackQueue.append(playerTrack)
             }
-            strongSelf.update(status: .queue(asset.1, asset.2, asset.3))
+            strongSelf.update(status: .queue(playerTrack.orig, playerTrack.messageId, playerTrack.chatId))
             return SignalProducer(value: ())
         }
     }
@@ -61,80 +61,68 @@ class ViewModel: NSObject {
                     return SignalProducer.empty
                 }
                 
-                if let prevAsset = strongSelf.lastDequeued.value {
-                    strongSelf.update(status: .done(prevAsset.1, prevAsset.2, prevAsset.3))
+                if let prevTrack = strongSelf.lastDequeued.value {
+                    strongSelf.update(status: .done(prevTrack.orig, prevTrack.messageId, prevTrack.chatId))
                 }
                 
-                let waitAsset = strongSelf.videoAssetsQueue.isEmpty ? SignalProducer(strongSelf.enqueueAssetAction.values.take(first: 1)) : SignalProducer(value: ())
+                let waitAsset = strongSelf.playerTrackQueue.isEmpty ? SignalProducer(strongSelf.enqueueTrackAction.values.take(first: 1)) : SignalProducer(value: ())
                 return waitAsset.flatMap(.latest) { _ -> SignalProducer<AVURLAsset, NoError> in
                     guard let strongSelf = self else {
                         return SignalProducer.empty
                     }
                     
-                    let asset = strongSelf.videoAssetsQueue.removeFirst()
-                    strongSelf.lastDequeued.value = asset
-                    strongSelf.update(status: .playing(asset.1, asset.2, asset.3))
-                    return SignalProducer(value: asset.0)
+                    let playerTrack = strongSelf.playerTrackQueue.removeFirst()
+                    strongSelf.lastDequeued.value = playerTrack
+                    strongSelf.update(status: .playing(playerTrack.orig, playerTrack.messageId, playerTrack.chatId))
+                    return SignalProducer(value: playerTrack.asset)
                 }
         }
     }
     
-    private func download(_ content: UproarContent) -> Signal<(AVURLAsset, Int, Int, Int), YoutubeLoadingError> {
-        let urlString: String
-        let orig: Int
-        let messageId: Int
-        let chatId: Int
-        switch content {
-        case .youtube(let _urlString, let _orig, let _messageId, let _chatId):
-            urlString = _urlString
-            orig = _orig
-            messageId = _messageId
-            chatId = _chatId
-            break
-        case .audio(let _urlString, let _orig, let _messageId, let _chatId):
-            urlString = _urlString
-            orig = _orig
-            messageId = _messageId
-            chatId = _chatId
-            break
-        }
-        self.update(status: .download(orig, messageId, chatId))
-        return self.youtubeLoaderService.downloadVideo(by: URL(string: urlString)!)
-            .flatMap(.latest) { (localVideoUrl) -> Signal<(AVURLAsset, Int, Int, Int), YoutubeLoadingError> in
+    private func download(_ content: UproarContent) -> Signal<PlayerAssetBasedTrack, NoError> {
+        self.update(status: .download(content.orig, content.messageId, content.chatId))
+        // TODO: use another downloader for audio
+        return self.youtubeLoaderService.downloadVideo(by: URL(string: content.urlString)!)
+            .flatMap(.latest) { (localVideoUrl) -> Signal<PlayerAssetBasedTrack, YoutubeLoadingError> in
                 let asset = AVURLAsset(url: localVideoUrl)
                 return Signal { (observer) -> Disposable? in
                     asset.loadValuesAsynchronously(forKeys: ViewModel.assetKeysRequiredToPlay) {
-                        observer.send(value: (asset, orig, messageId, chatId))
+                        let playerTrack = PlayerAssetBasedTrack(asset: asset, orig: content.orig, messageId: content.messageId, chatId: content.chatId)
+                        
+                        observer.send(value: playerTrack)
                         observer.sendCompleted()
                     }
                     return nil
                 }
+        }.flatMapError {[weak self] error -> SignalProducer<PlayerAssetBasedTrack, NoError> in
+            self?.handleErrorWithMessage("Video is not loaded", error: error)
+            
+            // TODO: map to PlayerUrlBasedTrack
+            return SignalProducer.empty
         }
     }
     
-    private func handleAssetEvent(_ event: Event<(AVURLAsset, Int, Int, Int), YoutubeLoadingError>) {
+    private func handleTrack(_ event: Event<PlayerAssetBasedTrack, NoError>) {
         switch event {
-        case .value(let loadedAsset):
+        case .value(let playerTrack):
             do {
-                try validate(asset: loadedAsset.0)
-                enqueueAssetAction.apply(loadedAsset).start()
+                try validate(asset: playerTrack.asset)
+                enqueueTrackAction.apply(playerTrack).start()
             } catch AssetError.failedKey(let key, let error) {
                 let stringFormat = NSLocalizedString("error.asset_key_%@_failed.description", comment: "Can't use this AVAsset because one of it's keys failed to load")
                 let message = String.localizedStringWithFormat(stringFormat, key)
                 handleErrorWithMessage(message, error: error)
-                self.update(status: .skip(loadedAsset.1, loadedAsset.2, loadedAsset.3))
+                self.update(status: .skip(playerTrack.orig, playerTrack.messageId, playerTrack.chatId))
             } catch AssetError.notPlayable {
                 let message = NSLocalizedString("error.asset_not_playable.description", comment: "Can't use this AVAsset because it isn't playable or has protected content")
                 handleErrorWithMessage(message)
-                self.update(status: .skip(loadedAsset.1, loadedAsset.2, loadedAsset.3))
+                self.update(status: .skip(playerTrack.orig, playerTrack.messageId, playerTrack.chatId))
             } catch {
-                self.update(status: .skip(loadedAsset.1, loadedAsset.2, loadedAsset.3))
+                self.update(status: .skip(playerTrack.orig, playerTrack.messageId, playerTrack.chatId))
             }
             break
-        case .failed(let error):
-            handleErrorWithMessage("Video is not loaded", error: error)
-            break
         default:
+            print("Something went wrong")
             break
         }
     }
