@@ -44,7 +44,9 @@ class FileDownloaderService: BaseDownloaderService {
             }
             task.resume()
             
-            return nil
+            return ActionDisposable(action: { 
+                task.cancel()
+            })
         })
     }
 }

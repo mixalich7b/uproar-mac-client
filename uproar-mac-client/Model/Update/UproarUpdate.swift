@@ -11,12 +11,16 @@ import ObjectMapper
 
 enum UproarUpdate: ImmutableMappable {
     case addContent(UproarContent)
+    case skip(Int)
     
     init(map: Map) throws {
         let updateType: String = try map.value("update")
         switch updateType {
         case "add_content":
             self = .addContent(try map.value("data"))
+            break
+        case "skip":
+            self = .skip(try map.value("data"))
             break
         default:
             throw MapError(key: "update", currentValue: updateType, reason: "Unknown update type")

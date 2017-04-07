@@ -23,6 +23,7 @@ class ViewModel: NSObject {
     private let uproarClient = UproarClient()
     
     private var playerTrackQueue = [PlayerAssetBasedTrack]()
+    private var skipTracks = [Int]()
     private let lastDequeued: Atomic<PlayerAssetBasedTrack?> = Atomic(nil)
     
     private lazy var enqueueTrackAction: Action<PlayerAssetBasedTrack, (), NoError> = self.enqueueTrack()
@@ -33,12 +34,35 @@ class ViewModel: NSObject {
         super.init()
         
         SignalProducer(uproarClient.updateSignal)
-            .filterMap { update -> UproarContent? in
+            .flatMap(.merge) {[weak self] (update) -> SignalProducer<PlayerAssetBasedTrack, NoError> in
+                guard let strongSelf = self else {
+                    return SignalProducer.empty
+                }
+                
                 switch update {
-                case .addContent(let content): return content
+                case .addContent(let content):
+                    return SignalProducer(strongSelf.download(content))
+                case .skip(let orig):
+                    if let lastDequeued = strongSelf.lastDequeued.value, lastDequeued.orig == orig {
+                        strongSelf.update(status: .skip(lastDequeued.orig, lastDequeued.messageId, lastDequeued.chatId))
+                        
+                        return strongSelf.playNextAction.apply(())
+                            .flatMap(.latest) { SignalProducer<PlayerAssetBasedTrack, NoError>.empty }
+                            .flatMapError { _ in SignalProducer<PlayerAssetBasedTrack, NoError>.empty }
+                    } else if let idx = strongSelf.playerTrackQueue.index(where: { $0.orig == orig }) {
+                        let queuedTrack = strongSelf.playerTrackQueue[idx]
+                        strongSelf.playerTrackQueue.remove(at: idx)
+                        
+                        strongSelf.update(status: .skip(queuedTrack.orig, queuedTrack.messageId, queuedTrack.chatId))
+                        
+                        return SignalProducer.empty
+                    } else {
+                        strongSelf.skipTracks.append(orig)
+                        
+                        return SignalProducer.empty
+                    }
                 }
             }
-            .flatMap(.merge, transform: download)
             .start(handleTrack)
     }
     
@@ -47,6 +71,12 @@ class ViewModel: NSObject {
             guard let strongSelf = self else {
                 return SignalProducer.empty
             }
+            guard !strongSelf.skipTracks.contains(playerTrack.orig) else {
+                // TODO: clean skipTracks array
+                strongSelf.update(status: .skip(playerTrack.orig, playerTrack.messageId, playerTrack.chatId))
+                return SignalProducer.empty
+            }
+            
             if !strongSelf.playerTrackQueue.contains(where: { $0.asset.url == playerTrack.asset.url }) {
                 strongSelf.playerTrackQueue.append(playerTrack)
             }
