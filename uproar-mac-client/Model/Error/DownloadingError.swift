@@ -1,5 +1,5 @@
 //
-//  YoutubeLoadingError.swift
+//  DownloadingError.swift
 //  uproar-mac-client
 //
 //  Created by Тупицин Константин on 28.03.17.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct YoutubeLoadingError: LocalizedError {
+struct DownloadingError: LocalizedError {
     let message: String
     
     var errorDescription: String? {

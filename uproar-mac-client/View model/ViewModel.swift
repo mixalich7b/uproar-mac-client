@@ -18,7 +18,8 @@ class ViewModel: NSObject {
         "hasProtectedContent"
     ]
     
-    private let youtubeLoaderService = YoutubeLoaderService()
+    private let youtubeDownloaderService = YoutubeDownloaderService()
+    private let fileDownloaderService = FileDownloaderService()
     private let uproarClient = UproarClient()
     
     private var playerTrackQueue = [PlayerAssetBasedTrack]()
@@ -81,24 +82,39 @@ class ViewModel: NSObject {
     
     private func download(_ content: UproarContent) -> Signal<PlayerAssetBasedTrack, NoError> {
         self.update(status: .download(content.orig, content.messageId, content.chatId))
-        // TODO: use another downloader for audio
-        return self.youtubeLoaderService.downloadVideo(by: URL(string: content.urlString)!)
-            .flatMap(.latest) { (localVideoUrl) -> Signal<PlayerAssetBasedTrack, YoutubeLoadingError> in
-                let asset = AVURLAsset(url: localVideoUrl)
-                return Signal { (observer) -> Disposable? in
-                    asset.loadValuesAsynchronously(forKeys: ViewModel.assetKeysRequiredToPlay) {
-                        let playerTrack = PlayerAssetBasedTrack(asset: asset, orig: content.orig, messageId: content.messageId, chatId: content.chatId)
-                        
-                        observer.send(value: playerTrack)
-                        observer.sendCompleted()
-                    }
-                    return nil
+        
+        let contentMapping: (URL) -> Signal<PlayerAssetBasedTrack, DownloadingError> = { (localContentUrl) in
+            let asset = AVURLAsset(url: localContentUrl)
+            return Signal { (observer) -> Disposable? in
+                asset.loadValuesAsynchronously(forKeys: ViewModel.assetKeysRequiredToPlay) {
+                    let playerTrack = PlayerAssetBasedTrack(asset: asset, orig: content.orig, messageId: content.messageId, chatId: content.chatId)
+                    
+                    observer.send(value: playerTrack)
+                    observer.sendCompleted()
                 }
-        }.flatMapError {[weak self] error -> SignalProducer<PlayerAssetBasedTrack, NoError> in
-            self?.handleErrorWithMessage("Video is not loaded", error: error)
+                return nil
+            }
+        }
+        
+        let contentLoadingErrorMapping: (DownloadingError) -> SignalProducer<PlayerAssetBasedTrack, NoError> = {[weak self] error in
+            self?.handleErrorWithMessage("Content is not loaded", error: error)
             
             // TODO: map to PlayerUrlBasedTrack
             return SignalProducer.empty
+        }
+        
+        switch content {
+        case let video as UproarYoutubeVideo:
+            return self.youtubeDownloaderService.download(by: URL(string: video.urlString)!)
+                .flatMap(.latest, transform: contentMapping)
+                .flatMapError(contentLoadingErrorMapping)
+        case let audio as UproarAudio:
+            return self.fileDownloaderService.download(by: URL(string: audio.urlString)!)
+                .flatMap(.latest, transform: contentMapping)
+                .flatMapError(contentLoadingErrorMapping)
+        default:
+            assertionFailure("Unsupported content type")
+            return Signal.empty
         }
     }
     

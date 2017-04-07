@@ -1,5 +1,5 @@
 //
-//  YoutubeLoaderService.swift
+//  YoutubeDownloaderService.swift
 //  uproar-mac-client
 //
 //  Created by Тупицин Константин on 28.03.17.
@@ -10,17 +10,15 @@ import ReactiveSwift
 import Python
 import SSZipArchive
 
-class YoutubeLoaderService {
+class YoutubeDownloaderService: BaseDownloaderService {
     
     private let fileManager = FileManager.default
     
-    private lazy var appSupportUrl: URL = {
-        self.fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!.appendingPathComponent("uproar-mac")
-    }()
-    
     private let downloaderQueue = DispatchQueue(label: "Downloader.py", qos: .background)
     
-    init() {
+    override init() {
+        super.init()
+        
         copyResourcesToAppSupport()
         initializePythonContext()
     }
@@ -50,7 +48,7 @@ class YoutubeLoaderService {
         }
     }
     
-    func downloadVideo(by url: URL) -> Signal<URL, YoutubeLoadingError> {
+    func download(by url: URL) -> Signal<URL, DownloadingError> {
         return Signal {[weak self] (observer) -> Disposable? in
             self?.downloaderQueue.async {
                 let downloaderModule = PyImport_ImportModule("Downloader")
@@ -60,34 +58,34 @@ class YoutubeLoaderService {
                 
                 let downloadFunc = PyObject_GetAttrString(downloaderModule, "download")
                 guard PyCallable_Check(downloadFunc) == 1 else {
-                    observer.send(error: YoutubeLoadingError(message: "download func missed"))
+                    observer.send(error: DownloadingError(message: "download func missed"))
                     return
                 }
                 let args = PyTuple_New(1)
                 let arg = PyString_FromString(url.absoluteString)
                 guard PyTuple_SetItem(args, 0, arg) == 0 else {
-                    observer.send(error: YoutubeLoadingError(message: "failed to build download args"))
+                    observer.send(error: DownloadingError(message: "failed to build download args"))
                     return
                 }
                 guard PyTuple_Size(args) == 1 else {
-                    observer.send(error: YoutubeLoadingError(message: "failed to build download args"))
+                    observer.send(error: DownloadingError(message: "failed to build download args"))
                     return
                 }
                 PyObject_CallObject(downloadFunc, args)
                 
                 let pollFinalFilepathFunc = PyObject_GetAttrString(downloaderModule, "pollFinalFilepath")
                 guard PyCallable_Check(pollFinalFilepathFunc) == 1 else {
-                    observer.send(error: YoutubeLoadingError(message: "pollFinalFilepath func missed"))
+                    observer.send(error: DownloadingError(message: "pollFinalFilepath func missed"))
                     return
                 }
                 let filepathObject = PyObject_CallObject(pollFinalFilepathFunc, PyTuple_New(0))
                 
                 guard let filepathCString = PyString_AsString(filepathObject) else {
-                    observer.send(error: YoutubeLoadingError(message: "pollFinalFilepath return nil"))
+                    observer.send(error: DownloadingError(message: "pollFinalFilepath return nil"))
                     return
                 }
                 guard let filepath = String(cString: filepathCString, encoding: .utf8) else {
-                    observer.send(error: YoutubeLoadingError(message: "pollFinalFilepath return broken string"))
+                    observer.send(error: DownloadingError(message: "pollFinalFilepath return broken string"))
                     return
                 }
                 
