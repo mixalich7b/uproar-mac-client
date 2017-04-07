@@ -27,8 +27,8 @@ class FileDownloaderService: BaseDownloaderService {
                     return
                 }
                 
-                let filename = tempLocalUrl.lastPathComponent
-                let localUrl = appSupportUrl.appendingPathComponent(filename)
+                let filename = url.lastPathComponent
+                let localUrl = appSupportUrl.appendingPathComponent("audio").appendingPathComponent(filename)
                 
                 do {
                     try FileManager.default.copyItem(at: tempLocalUrl, to: localUrl)

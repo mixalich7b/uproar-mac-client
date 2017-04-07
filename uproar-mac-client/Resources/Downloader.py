@@ -27,7 +27,7 @@ def download(url):
         'noplaylist': True,
         'forcefilename': True,
         'restrictfilenames': True,
-        'outtmpl': '/Users/k.tupitsin/Library/Application Support/uproar-mac/videos/%(id)s.%(ext)s',
+        'outtmpl': '~/Library/Application Support/uproar-mac/videos/%(id)s.%(ext)s',
         'writeinfojson': True,
         'format': 'mp4',
         'progress_hooks': [progress_hooks]
