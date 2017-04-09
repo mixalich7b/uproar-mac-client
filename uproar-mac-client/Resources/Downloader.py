@@ -30,7 +30,8 @@ def download(url):
         'outtmpl': '~/Library/Application Support/uproar-mac/videos/%(id)s.%(ext)s',
         'writeinfojson': True,
         'format': 'mp4',
-        'progress_hooks': [progress_hooks]
+        'progress_hooks': [progress_hooks],
+        'skip_download': True
     }
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download([url])

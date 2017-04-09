@@ -13,8 +13,8 @@ import SSZipArchive
 class YoutubeDownloaderService: BaseDownloaderService {
     
     private let fileManager = FileManager.default
-    
     private let downloaderQueue = DispatchQueue(label: "Downloader.py", qos: .background)
+    private var downloaderModule: UnsafeMutablePointer<PyObject>?
     
     override init() {
         super.init()
@@ -45,15 +45,21 @@ class YoutubeDownloaderService: BaseDownloaderService {
             let sysPath = PySys_GetObject(UnsafeMutablePointer(mutating: UnsafePointer("path".cString(using: .utf8))))
             let path = PyString_FromString(appSupportPath)
             PyList_Insert(sysPath, 0, path)
+            
+            self.downloaderModule = PyImport_ImportModule("Downloader")
+            
+            if PyErr_Occurred() != nil {
+                PyErr_Print()
+            }
         }
     }
     
     func download(by url: URL) -> Signal<URL, DownloadingError> {
         return Signal {[weak self] (observer) -> Disposable? in
             self?.downloaderQueue.async {
-                let downloaderModule = PyImport_ImportModule("Downloader")
-                if PyErr_Occurred() != nil {
-                    PyErr_Print()
+                guard let downloaderModule = self?.downloaderModule else {
+                    observer.send(error: DownloadingError(message: "Downloader module missed"))
+                    return
                 }
                 
                 let downloadFunc = PyObject_GetAttrString(downloaderModule, "download")

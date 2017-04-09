@@ -13,11 +13,6 @@ import Result
 
 class ViewModel: NSObject {
     
-    private static let assetKeysRequiredToPlay = [
-        "playable",
-        "hasProtectedContent"
-    ]
-    
     private let youtubeDownloaderService = YoutubeDownloaderService()
     private let fileDownloaderService = FileDownloaderService()
     private let uproarClient = UproarClient()
@@ -116,7 +111,7 @@ class ViewModel: NSObject {
         let contentMapping: (URL) -> Signal<PlayerAssetBasedTrack, DownloadingError> = { (localContentUrl) in
             let asset = AVURLAsset(url: localContentUrl)
             return Signal { (observer) -> Disposable? in
-                asset.loadValuesAsynchronously(forKeys: ViewModel.assetKeysRequiredToPlay) {
+                asset.loadValuesAsynchronously(forKeys: Constants.assetKeysRequiredToPlay) {
                     let playerTrack = PlayerAssetBasedTrack(asset: asset, orig: content.orig, messageId: content.messageId, chatId: content.chatId)
                     
                     observer.send(value: playerTrack)
@@ -174,7 +169,7 @@ class ViewModel: NSObject {
     }
     
     private func validate(asset: AVURLAsset) throws {
-        for key in ViewModel.assetKeysRequiredToPlay {
+        for key in Constants.assetKeysRequiredToPlay {
             var error: NSError?
             if asset.statusOfValue(forKey: key, error: &error) == .failed {
                 throw AssetError.failedKey(key, error)

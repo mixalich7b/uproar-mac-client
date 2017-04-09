@@ -58,7 +58,7 @@ enum UproarTrackStatus: ImmutableMappable, CustomDebugStringConvertible {
             break
         case .skip(let orig, let messageId, let chatId):
             "skip" >>> map[statusKey]
-            "Skip" >>> map[titleKey]
+            "Skipped" >>> map[titleKey]
             orig >>> map[origKey]
             messageId >>> map[messageIdKey]
             chatId >>> map[chatIdKey]

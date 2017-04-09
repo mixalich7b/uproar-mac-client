@@ -10,4 +10,9 @@ import Foundation
 
 struct Constants {
     static let token = "<your_token>"
+    
+    static let assetKeysRequiredToPlay = [
+        "playable",
+        "hasProtectedContent"
+    ]
 }

@@ -44,25 +44,30 @@ class ViewController: NSViewController {
             }
         }
         
-        viewModel.nextVideoAssetSignalProducer.startWithValues {[weak self] (asset) in
-            let playerItem = AVPlayerItem(asset: asset)
-            self?.player.replaceCurrentItem(with: playerItem)
-            if self?.player.rate ?? 0.0 < 0.7 {
-               self?.player.play()
+        viewModel.nextVideoAssetSignalProducer.on(
+            started: {[weak self] in
+                self?.viewModel.playNextAction.apply(()).start()
+            },
+            value: {[weak self] (asset) in
+                let playerItem = AVPlayerItem(asset: asset)
+                self?.player.replaceCurrentItem(with: playerItem)
+                if self?.player.rate ?? 0.0 < 0.7 {
+                    self?.player.play()
+                }
             }
-        }
-        viewModel.playNextAction.apply(()).start()
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(playerItemDidReachEnd), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
+            )
+            .flatMap(.latest) { _ in
+                return NotificationCenter.default.reactive
+                    .notifications(forName: NSNotification.Name.AVPlayerItemDidPlayToEndTime)
+                    .take(first: 1)
+            }.flatMap(.latest) {[weak self] _ in
+                return self?.viewModel.playNextAction.apply(()) ?? SignalProducer.empty
+            }
+            .start()
     }
     
     private func handleErrorWithMessage(_ message: String?, error: Error? = nil) {
         print("Error occured with message: \(String(describing: message)), error: \(String(describing: error?.localizedDescription)).")
-    }
-    
-    @objc
-    private func playerItemDidReachEnd() {
-        viewModel.playNextAction.apply(()).start()
     }
     
     deinit {

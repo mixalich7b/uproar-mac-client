@@ -14,12 +14,12 @@
 		B22E39181E990205003D3E4F /* UproarUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22E39111E990205003D3E4F /* UproarUpdate.swift */; };
 		B22E39191E990205003D3E4F /* UproarMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22E39131E990205003D3E4F /* UproarMessage.swift */; };
 		B22E391A1E990205003D3E4F /* UproarTrackStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22E39141E990205003D3E4F /* UproarTrackStatus.swift */; };
+		B22E391D1E99500B003D3E4F /* PlayerAssetBasedTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22E391B1E99500B003D3E4F /* PlayerAssetBasedTrack.swift */; };
+		B22E391E1E99500B003D3E4F /* PlayerUrlBasedTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22E391C1E99500B003D3E4F /* PlayerUrlBasedTrack.swift */; };
+		B22E39211E9A6E5F003D3E4F /* Optional.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22E39201E9A6E5F003D3E4F /* Optional.swift */; };
+		B22E39231E9A7390003D3E4F /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22E39221E9A7390003D3E4F /* Array.swift */; };
 		B22F32971E8AAD70006E9F8B /* UproarClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22F32961E8AAD70006E9F8B /* UproarClient.swift */; };
 		B2588B4E1E923410005ECA71 /* PlayerTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2588B4D1E923410005ECA71 /* PlayerTrack.swift */; };
-		B2588B5D1E9237A6005ECA71 /* PlayerAssetBasedTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2588B581E9237A6005ECA71 /* PlayerAssetBasedTrack.swift */; };
-		B2588B5E1E9237A6005ECA71 /* PlayerAudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2588B591E9237A6005ECA71 /* PlayerAudio.swift */; };
-		B2588B5F1E9237A6005ECA71 /* PlayerVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2588B5A1E9237A6005ECA71 /* PlayerVideo.swift */; };
-		B2588B601E9237A6005ECA71 /* PlayerUrlBasedTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2588B5C1E9237A6005ECA71 /* PlayerUrlBasedTrack.swift */; };
 		B281764A1E8D8EDB0042848A /* AssetError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28176431E8D8EDB0042848A /* AssetError.swift */; };
 		B281764B1E8D8EDB0042848A /* DownloadingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28176441E8D8EDB0042848A /* DownloadingError.swift */; };
 		B28A72011E97C445003C4B75 /* BaseDownloaderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28A71FD1E97C445003C4B75 /* BaseDownloaderService.swift */; };
@@ -48,12 +48,12 @@
 		B22E39111E990205003D3E4F /* UproarUpdate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UproarUpdate.swift; sourceTree = "<group>"; };
 		B22E39131E990205003D3E4F /* UproarMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UproarMessage.swift; sourceTree = "<group>"; };
 		B22E39141E990205003D3E4F /* UproarTrackStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UproarTrackStatus.swift; sourceTree = "<group>"; };
+		B22E391B1E99500B003D3E4F /* PlayerAssetBasedTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerAssetBasedTrack.swift; sourceTree = "<group>"; };
+		B22E391C1E99500B003D3E4F /* PlayerUrlBasedTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerUrlBasedTrack.swift; sourceTree = "<group>"; };
+		B22E39201E9A6E5F003D3E4F /* Optional.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Optional.swift; sourceTree = "<group>"; };
+		B22E39221E9A7390003D3E4F /* Array.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
 		B22F32961E8AAD70006E9F8B /* UproarClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UproarClient.swift; sourceTree = "<group>"; };
 		B2588B4D1E923410005ECA71 /* PlayerTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerTrack.swift; sourceTree = "<group>"; };
-		B2588B581E9237A6005ECA71 /* PlayerAssetBasedTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerAssetBasedTrack.swift; sourceTree = "<group>"; };
-		B2588B591E9237A6005ECA71 /* PlayerAudio.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerAudio.swift; sourceTree = "<group>"; };
-		B2588B5A1E9237A6005ECA71 /* PlayerVideo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerVideo.swift; sourceTree = "<group>"; };
-		B2588B5C1E9237A6005ECA71 /* PlayerUrlBasedTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerUrlBasedTrack.swift; sourceTree = "<group>"; };
 		B28176431E8D8EDB0042848A /* AssetError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetError.swift; sourceTree = "<group>"; };
 		B28176441E8D8EDB0042848A /* DownloadingError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadingError.swift; sourceTree = "<group>"; };
 		B28A71FD1E97C445003C4B75 /* BaseDownloaderService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseDownloaderService.swift; sourceTree = "<group>"; };
@@ -129,32 +129,23 @@
 			path = Outgoing;
 			sourceTree = "<group>";
 		};
+		B22E391F1E9A6E4C003D3E4F /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				B22E39201E9A6E5F003D3E4F /* Optional.swift */,
+				B22E39221E9A7390003D3E4F /* Array.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
 		B2588B4C1E9233F7005ECA71 /* Player track */ = {
 			isa = PBXGroup;
 			children = (
 				B2588B4D1E923410005ECA71 /* PlayerTrack.swift */,
-				B2588B571E9237A6005ECA71 /* Asset based */,
-				B2588B5B1E9237A6005ECA71 /* URL based */,
+				B22E391B1E99500B003D3E4F /* PlayerAssetBasedTrack.swift */,
+				B22E391C1E99500B003D3E4F /* PlayerUrlBasedTrack.swift */,
 			);
 			path = "Player track";
-			sourceTree = "<group>";
-		};
-		B2588B571E9237A6005ECA71 /* Asset based */ = {
-			isa = PBXGroup;
-			children = (
-				B2588B581E9237A6005ECA71 /* PlayerAssetBasedTrack.swift */,
-				B2588B591E9237A6005ECA71 /* PlayerAudio.swift */,
-				B2588B5A1E9237A6005ECA71 /* PlayerVideo.swift */,
-			);
-			path = "Asset based";
-			sourceTree = "<group>";
-		};
-		B2588B5B1E9237A6005ECA71 /* URL based */ = {
-			isa = PBXGroup;
-			children = (
-				B2588B5C1E9237A6005ECA71 /* PlayerUrlBasedTrack.swift */,
-			);
-			path = "URL based";
 			sourceTree = "<group>";
 		};
 		B28176421E8D8EDB0042848A /* Error */ = {
@@ -243,6 +234,7 @@
 		B2C9AE4A1E7213BA00CA4E07 /* uproar-mac-client */ = {
 			isa = PBXGroup;
 			children = (
+				B22E391F1E9A6E4C003D3E4F /* Extension */,
 				B2A0F0E21E89BAE2002C5160 /* Model */,
 				B2A0F0D11E89BAC0002C5160 /* Resources */,
 				B2A0F0D41E89BAC0002C5160 /* Service */,
@@ -391,23 +383,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				B22E39171E990205003D3E4F /* UproarYoutubeVideo.swift in Sources */,
+				B22E39211E9A6E5F003D3E4F /* Optional.swift in Sources */,
 				B2A0F0E01E89BAC0002C5160 /* ViewController.swift in Sources */,
 				B28A72011E97C445003C4B75 /* BaseDownloaderService.swift in Sources */,
 				B2C9AE4C1E7213BA00CA4E07 /* AppDelegate.swift in Sources */,
 				B2C9AE5D1E721A4400CA4E07 /* Constants.swift in Sources */,
+				B22E39231E9A7390003D3E4F /* Array.swift in Sources */,
 				B22F32971E8AAD70006E9F8B /* UproarClient.swift in Sources */,
 				B281764B1E8D8EDB0042848A /* DownloadingError.swift in Sources */,
-				B2588B5F1E9237A6005ECA71 /* PlayerVideo.swift in Sources */,
 				B22E391A1E990205003D3E4F /* UproarTrackStatus.swift in Sources */,
 				B28A72031E97C445003C4B75 /* FileDownloaderService.swift in Sources */,
-				B2588B5D1E9237A6005ECA71 /* PlayerAssetBasedTrack.swift in Sources */,
 				B2588B4E1E923410005ECA71 /* PlayerTrack.swift in Sources */,
-				B2588B601E9237A6005ECA71 /* PlayerUrlBasedTrack.swift in Sources */,
 				B22E39151E990205003D3E4F /* UproarAudio.swift in Sources */,
-				B2588B5E1E9237A6005ECA71 /* PlayerAudio.swift in Sources */,
+				B22E391D1E99500B003D3E4F /* PlayerAssetBasedTrack.swift in Sources */,
 				B28A72041E97C445003C4B75 /* YoutubeDownloaderService.swift in Sources */,
 				B22E39161E990205003D3E4F /* UproarContent.swift in Sources */,
 				B281764A1E8D8EDB0042848A /* AssetError.swift in Sources */,
+				B22E391E1E99500B003D3E4F /* PlayerUrlBasedTrack.swift in Sources */,
 				B2A0F0DF1E89BAC0002C5160 /* PlayerView.swift in Sources */,
 				B22E39191E990205003D3E4F /* UproarMessage.swift in Sources */,
 				B2A0F0E11E89BAC0002C5160 /* ViewModel.swift in Sources */,
