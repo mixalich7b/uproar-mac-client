@@ -12,8 +12,11 @@ import AVFoundation
 
 class TrackQueueManager {
     
-    lazy private(set) var enqueueTrackAction: Action<UproarContent, (), NoError> = self.enqueueTrack()
-    lazy private(set) var skipTrackAction: Action<Int, UproarContent?, NoError> = self.skipTrack()
+    typealias Dependencies = HasUproarClient
+    
+    lazy private(set) var enqueueTrackAction: Action<UproarContent, UproarContent, NoError> = self.enqueueTrack()
+    lazy private(set) var skipTrackAction: Action<Int, UproarContent, TrackQueueError> = self.skipTrack()
+    lazy private(set) var dequeueNextTrackAction: Action<(), PlayerTrack, TrackQueueError> = self.dequeueNextTrack()
     
     private let downloadQueue = Atomic<[UproarContent]>([])
     private let playQueue = Atomic<[PlayerTrack]>([])
@@ -23,20 +26,40 @@ class TrackQueueManager {
     private let youtubeDownloaderService = YoutubeDownloaderService()
     private let fileDownloaderService = FileDownloaderService()
     
-    init() {
+    private let dependencies: Dependencies
+    
+    init(dependencies: Dependencies) {
+        self.dependencies = dependencies
         
+        downloadNext().start()
+        
+        skipTrackAction.values
+            .flatMap(.latest) {[weak self] (skippedContent) -> SignalProducer<(), AnyError> in
+                guard let strongSelf = self else {
+                    return SignalProducer.empty
+                }
+                return strongSelf.dependencies.uproarClient.update(status: .skip(skippedContent.orig, skippedContent.messageId, skippedContent.chatId))
+            }
+            .ignoreErrors()
+            .observe(.init())
     }
     
-    private func enqueueTrack() -> Action<UproarContent, (), NoError> {
+    private func enqueueTrack() -> Action<UproarContent, UproarContent, NoError> {
         return Action {[weak self] content in
-            return SignalProducer(value: ()).on(value: { _ in
-                self?.addToDownloadQueue(content)
+            return SignalProducer({ (observer, _) in
+                guard let strongSelf = self else {
+                    observer.sendCompleted()
+                    return
+                }
+                strongSelf.add(content: content, toQueue: strongSelf.downloadQueue)
+                observer.send(value: content)
+                observer.sendCompleted()
             })
         }
     }
     
-    private func skipTrack() -> Action<Int, UproarContent?, NoError> {
-        return Action {[weak self] (orig) -> SignalProducer<UproarContent?, NoError> in
+    private func skipTrack() -> Action<Int, UproarContent, TrackQueueError> {
+        return Action {[weak self] (orig) -> SignalProducer<UproarContent, TrackQueueError> in
             return SignalProducer { (observer, disposable) -> Void in
                 defer {
                     observer.sendCompleted()
@@ -62,87 +85,104 @@ class TrackQueueManager {
                 } else {
                     strongSelf.handleErrorWithMessage("Content with orig \(orig) not found")
                     
-                    observer.send(value: nil)
+                    observer.send(error: .trackNotFound("Content with orig \(orig) not found"))
                 }
             }
         }
     }
     
-    private func downloadNext() -> Signal<PlayerTrack, NoError> {
-        return Signal {[weak self] (observer: Observer<UproarContent, NoError>) -> Disposable? in
+    private func dequeueNextTrack() -> Action<(), PlayerTrack, TrackQueueError> {
+        return Action {[weak self] _ -> SignalProducer<PlayerTrack, TrackQueueError> in
             guard let strongSelf = self else {
-                observer.sendCompleted()
-                return nil
+                return SignalProducer.empty
             }
-            guard let content = (strongSelf.pollFromDownloadQueue { self?.currentDownloading.value = $0 }) else {
-                observer.sendCompleted()
-                return nil
+            guard let content = (strongSelf.pollFromQueue(strongSelf.playQueue)) else {
+                return SignalProducer.init(error: .emptyQueue("playQueue is empty"))
             }
             
-            observer.send(value: content)
-            observer.sendCompleted()
-            
-            return nil
-        }.flatMap(.latest) {[weak self] (content) -> Signal<PlayerTrack, NoError> in
-            guard let strongSelf = self else {
-                return Signal.empty
-            }
-            
-            guard let url = URL(string: content.urlString) else {
-                return Signal.empty
-            }
-            
-            let contentMapping: (URL) -> Signal<PlayerTrack, DownloadingError> = { (localContentUrl) in
-                let asset = AVURLAsset(url: localContentUrl)
-                return Signal { (observer) -> Disposable? in
-                    asset.loadValuesAsynchronously(forKeys: Constants.assetKeysRequiredToPlay) {
-                        let playerTrack = PlayerAssetBasedTrack(asset: asset, orig: content.orig, messageId: content.messageId, chatId: content.chatId)
-                        
-                        observer.send(value: playerTrack)
-                        observer.sendCompleted()
-                    }
-                    return nil
+            return SignalProducer(value: content)
+        }
+    }
+    
+    // recursive
+    private func downloadNext() -> SignalProducer<PlayerTrack, NoError> {
+        let waitForContent = self.downloadQueue.value.count > 0 ?
+            SignalProducer(value: ()) : SignalProducer(self.enqueueTrackAction.values.take(first: 1)).map { _ in () }
+        
+        return waitForContent
+            .flatMap(.latest) {[weak self] _ -> Signal<PlayerTrack, NoError> in
+                guard let strongSelf = self else {
+                    return Signal.empty
                 }
-            }
-            
-            let contentLoadingErrorMapping: (DownloadingError) -> SignalProducer<PlayerTrack, NoError> = { error in
-                self?.handleErrorWithMessage("Content is not loaded", error: error)
+                guard let content = (strongSelf.pollFromQueue(strongSelf.downloadQueue) { self?.currentDownloading.value = $0 }) else {
+                    return Signal.empty
+                }
                 
-                return SignalProducer(value: PlayerUrlBasedTrack(url: url, orig: content.orig, messageId: content.messageId, chatId: content.chatId))
-            }
-            
-            switch content {
-            case _ as UproarYoutubeVideo:
-                return strongSelf.youtubeDownloaderService.download(by: url)
-                    .flatMap(.latest, transform: contentMapping)
-                    .flatMapError(contentLoadingErrorMapping)
-            case _ as UproarAudio:
-                return strongSelf.fileDownloaderService.download(by: url)
-                    .flatMap(.latest, transform: contentMapping)
-                    .flatMapError(contentLoadingErrorMapping)
-            default:
-                assertionFailure("Unsupported content type")
-                return Signal.empty
-            }
+                return strongSelf.download(content)
+            }.on(value: {[weak self] _ in
+                self?.currentDownloading.value = nil
+            }).flatMap(.latest) {[weak self] track -> SignalProducer<PlayerTrack, NoError> in
+                guard let strongSelf = self else {
+                    return SignalProducer.empty
+                }
+                
+                strongSelf.dependencies.uproarClient.update(status: .queue(track.orig, track.messageId, track.chatId)).start()
+                strongSelf.add(content: track, toQueue: strongSelf.playQueue)
+                return strongSelf.downloadNext()
         }
     }
     
-    private func addToDownloadQueue(_ content: UproarContent) {
-        self.downloadQueue.modify { queue in
+    private func download(_ content: UproarContent) -> Signal<PlayerTrack, NoError> {
+        guard let url = URL(string: content.urlString) else {
+            return Signal.empty
+        }
+        
+        self.dependencies.uproarClient.update(status: .download(content.orig, content.messageId, content.chatId)).start()
+        
+        let contentMapping: (URL) -> Signal<PlayerTrack, DownloadingError> = { (localContentUrl) in
+            let asset = AVURLAsset(url: localContentUrl)
+            return Signal { (observer) -> Disposable? in
+                asset.loadValuesAsynchronously(forKeys: Constants.assetKeysRequiredToPlay) {
+                    let playerTrack = PlayerAssetBasedTrack(asset: asset, orig: content.orig, messageId: content.messageId, chatId: content.chatId)
+                    
+                    observer.send(value: playerTrack)
+                    observer.sendCompleted()
+                }
+                return nil
+            }
+        }
+        
+        let contentLoadingErrorMapping: (DownloadingError) -> SignalProducer<PlayerTrack, NoError> = {[weak self] error in
+            self?.handleErrorWithMessage("Content is not loaded", error: error)
+            
+            return SignalProducer(value: PlayerUrlBasedTrack(url: url, orig: content.orig, messageId: content.messageId, chatId: content.chatId))
+        }
+        
+        switch content {
+        case _ as UproarYoutubeVideo:
+            return self.youtubeDownloaderService.download(by: url)
+                .flatMap(.latest, transform: contentMapping)
+                .flatMapError(contentLoadingErrorMapping)
+        case _ as UproarAudio:
+            return self.fileDownloaderService.download(by: url)
+                .flatMap(.latest, transform: contentMapping)
+                .flatMapError(contentLoadingErrorMapping)
+        default:
+            assertionFailure("Unsupported content type")
+            return Signal.empty
+        }
+    }
+    
+    private func add<Content>(content: Content, toQueue queueHolder: Atomic<[Content]>) {
+        queueHolder.modify { queue in
             queue.append(content)
         }
     }
     
-    private func pollFromDownloadQueue(_ action: ((UproarContent?) -> Void)? = nil) -> UproarContent? {
-        return self.downloadQueue.modify { queue -> UproarContent? in
-            
-            let first = queue.first
-            if first != nil {
-                queue.removeFirst()
-            }
-            
+    private func pollFromQueue<Content>(_ queue: Atomic<[Content]>, _ action: ((Content?) -> Void)? = nil) -> Content? {
+        return queue.modify { queue -> Content? in
+            let first = queue.pullFirst()
             action?(first)
-            
             return first
         }
     }

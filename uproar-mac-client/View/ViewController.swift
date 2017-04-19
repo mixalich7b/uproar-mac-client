@@ -44,7 +44,7 @@ class ViewController: NSViewController {
             }
         }
         
-        viewModel.nextVideoAssetSignalProducer.on(
+        viewModel.nextTrackAssetSignalProducer.on(
             started: {[weak self] in
                 self?.viewModel.playNextAction.apply(()).start()
             },

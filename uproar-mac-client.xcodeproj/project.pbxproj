@@ -19,6 +19,9 @@
 		B22E39211E9A6E5F003D3E4F /* Optional.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22E39201E9A6E5F003D3E4F /* Optional.swift */; };
 		B22E39231E9A7390003D3E4F /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22E39221E9A7390003D3E4F /* Array.swift */; };
 		B22F32971E8AAD70006E9F8B /* UproarClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22F32961E8AAD70006E9F8B /* UproarClient.swift */; };
+		B237AD0F1EA15818007152C5 /* UproarClient+TrackStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B237AD0E1EA15818007152C5 /* UproarClient+TrackStatus.swift */; };
+		B237AD1B1EA15A04007152C5 /* AppDependency.swift in Sources */ = {isa = PBXBuildFile; fileRef = B237AD181EA15A04007152C5 /* AppDependency.swift */; };
+		B237AD1C1EA15A04007152C5 /* HasUproarClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B237AD1A1EA15A04007152C5 /* HasUproarClient.swift */; };
 		B2588B4E1E923410005ECA71 /* PlayerTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2588B4D1E923410005ECA71 /* PlayerTrack.swift */; };
 		B281764A1E8D8EDB0042848A /* AssetError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28176431E8D8EDB0042848A /* AssetError.swift */; };
 		B281764B1E8D8EDB0042848A /* DownloadingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B28176441E8D8EDB0042848A /* DownloadingError.swift */; };
@@ -30,6 +33,9 @@
 		B2A0F0DF1E89BAC0002C5160 /* PlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A0F0D71E89BAC0002C5160 /* PlayerView.swift */; };
 		B2A0F0E01E89BAC0002C5160 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A0F0D81E89BAC0002C5160 /* ViewController.swift */; };
 		B2A0F0E11E89BAC0002C5160 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A0F0DA1E89BAC0002C5160 /* ViewModel.swift */; };
+		B2AD5A4E1EA6C386007CF4FB /* TrackQueueError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2AD5A4D1EA6C386007CF4FB /* TrackQueueError.swift */; };
+		B2AD5A501EA6C6D5007CF4FB /* SignalProducer+IgnoreErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2AD5A4F1EA6C6D5007CF4FB /* SignalProducer+IgnoreErrors.swift */; };
+		B2AD5A521EA6C930007CF4FB /* Signal+IgnoreErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2AD5A511EA6C930007CF4FB /* Signal+IgnoreErrors.swift */; };
 		B2C9AE4C1E7213BA00CA4E07 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C9AE4B1E7213BA00CA4E07 /* AppDelegate.swift */; };
 		B2C9AE501E7213BA00CA4E07 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B2C9AE4F1E7213BA00CA4E07 /* Assets.xcassets */; };
 		B2C9AE531E7213BA00CA4E07 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B2C9AE511E7213BA00CA4E07 /* Main.storyboard */; };
@@ -53,6 +59,9 @@
 		B22E39201E9A6E5F003D3E4F /* Optional.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Optional.swift; sourceTree = "<group>"; };
 		B22E39221E9A7390003D3E4F /* Array.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
 		B22F32961E8AAD70006E9F8B /* UproarClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UproarClient.swift; sourceTree = "<group>"; };
+		B237AD0E1EA15818007152C5 /* UproarClient+TrackStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UproarClient+TrackStatus.swift"; sourceTree = "<group>"; };
+		B237AD181EA15A04007152C5 /* AppDependency.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDependency.swift; sourceTree = "<group>"; };
+		B237AD1A1EA15A04007152C5 /* HasUproarClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HasUproarClient.swift; sourceTree = "<group>"; };
 		B2588B4D1E923410005ECA71 /* PlayerTrack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerTrack.swift; sourceTree = "<group>"; };
 		B28176431E8D8EDB0042848A /* AssetError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetError.swift; sourceTree = "<group>"; };
 		B28176441E8D8EDB0042848A /* DownloadingError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadingError.swift; sourceTree = "<group>"; };
@@ -64,6 +73,9 @@
 		B2A0F0D71E89BAC0002C5160 /* PlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerView.swift; sourceTree = "<group>"; };
 		B2A0F0D81E89BAC0002C5160 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		B2A0F0DA1E89BAC0002C5160 /* ViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
+		B2AD5A4D1EA6C386007CF4FB /* TrackQueueError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackQueueError.swift; sourceTree = "<group>"; };
+		B2AD5A4F1EA6C6D5007CF4FB /* SignalProducer+IgnoreErrors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SignalProducer+IgnoreErrors.swift"; sourceTree = "<group>"; };
+		B2AD5A511EA6C930007CF4FB /* Signal+IgnoreErrors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Signal+IgnoreErrors.swift"; sourceTree = "<group>"; };
 		B2C9AE481E7213BA00CA4E07 /* uproar-mac-client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "uproar-mac-client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2C9AE4B1E7213BA00CA4E07 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B2C9AE4F1E7213BA00CA4E07 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -134,8 +146,28 @@
 			children = (
 				B22E39201E9A6E5F003D3E4F /* Optional.swift */,
 				B22E39221E9A7390003D3E4F /* Array.swift */,
+				B237AD0E1EA15818007152C5 /* UproarClient+TrackStatus.swift */,
+				B2AD5A4F1EA6C6D5007CF4FB /* SignalProducer+IgnoreErrors.swift */,
+				B2AD5A511EA6C930007CF4FB /* Signal+IgnoreErrors.swift */,
 			);
 			path = Extension;
+			sourceTree = "<group>";
+		};
+		B237AD171EA15A04007152C5 /* Dependency */ = {
+			isa = PBXGroup;
+			children = (
+				B237AD181EA15A04007152C5 /* AppDependency.swift */,
+				B237AD191EA15A04007152C5 /* Container */,
+			);
+			path = Dependency;
+			sourceTree = "<group>";
+		};
+		B237AD191EA15A04007152C5 /* Container */ = {
+			isa = PBXGroup;
+			children = (
+				B237AD1A1EA15A04007152C5 /* HasUproarClient.swift */,
+			);
+			path = Container;
 			sourceTree = "<group>";
 		};
 		B2588B4C1E9233F7005ECA71 /* Player track */ = {
@@ -152,6 +184,7 @@
 			isa = PBXGroup;
 			children = (
 				B28176431E8D8EDB0042848A /* AssetError.swift */,
+				B2AD5A4D1EA6C386007CF4FB /* TrackQueueError.swift */,
 				B28176441E8D8EDB0042848A /* DownloadingError.swift */,
 			);
 			path = Error;
@@ -234,6 +267,7 @@
 		B2C9AE4A1E7213BA00CA4E07 /* uproar-mac-client */ = {
 			isa = PBXGroup;
 			children = (
+				B237AD171EA15A04007152C5 /* Dependency */,
 				B22E391F1E9A6E4C003D3E4F /* Extension */,
 				B2A0F0E21E89BAE2002C5160 /* Model */,
 				B2A0F0D11E89BAC0002C5160 /* Resources */,
@@ -383,12 +417,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				B22E39171E990205003D3E4F /* UproarYoutubeVideo.swift in Sources */,
+				B2AD5A501EA6C6D5007CF4FB /* SignalProducer+IgnoreErrors.swift in Sources */,
+				B2AD5A4E1EA6C386007CF4FB /* TrackQueueError.swift in Sources */,
 				B22E39211E9A6E5F003D3E4F /* Optional.swift in Sources */,
+				B2AD5A521EA6C930007CF4FB /* Signal+IgnoreErrors.swift in Sources */,
 				B2A0F0E01E89BAC0002C5160 /* ViewController.swift in Sources */,
 				B28A72011E97C445003C4B75 /* BaseDownloaderService.swift in Sources */,
 				B2C9AE4C1E7213BA00CA4E07 /* AppDelegate.swift in Sources */,
+				B237AD0F1EA15818007152C5 /* UproarClient+TrackStatus.swift in Sources */,
 				B2C9AE5D1E721A4400CA4E07 /* Constants.swift in Sources */,
 				B22E39231E9A7390003D3E4F /* Array.swift in Sources */,
+				B237AD1C1EA15A04007152C5 /* HasUproarClient.swift in Sources */,
 				B22F32971E8AAD70006E9F8B /* UproarClient.swift in Sources */,
 				B281764B1E8D8EDB0042848A /* DownloadingError.swift in Sources */,
 				B22E391A1E990205003D3E4F /* UproarTrackStatus.swift in Sources */,
@@ -402,6 +441,7 @@
 				B22E391E1E99500B003D3E4F /* PlayerUrlBasedTrack.swift in Sources */,
 				B2A0F0DF1E89BAC0002C5160 /* PlayerView.swift in Sources */,
 				B22E39191E990205003D3E4F /* UproarMessage.swift in Sources */,
+				B237AD1B1EA15A04007152C5 /* AppDependency.swift in Sources */,
 				B2A0F0E11E89BAC0002C5160 /* ViewModel.swift in Sources */,
 				B22E390A1E990072003D3E4F /* TrackQueueManager.swift in Sources */,
 				B22E39181E990205003D3E4F /* UproarUpdate.swift in Sources */,

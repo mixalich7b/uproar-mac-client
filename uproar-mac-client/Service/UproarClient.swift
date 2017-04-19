@@ -31,9 +31,7 @@ class UproarClient: MQTTSessionDelegate {
             .flatMap(.concat) { subscribeToDeviceChannelSignal }
             .flatMap(.concat) { sendRegisterSignal }
             .then(disconnectSignalProducer.take(first: 1))
-            .flatMapError { _ in
-                return SignalProducer<(), NoError>.empty
-            }
+            .ignoreErrors()
             .delay(10.0, on: QueueScheduler.main)
             .repeat(1000)
             .start()

@@ -13,158 +13,117 @@ import Result
 
 class ViewModel: NSObject {
     
-    private let youtubeDownloaderService = YoutubeDownloaderService()
-    private let fileDownloaderService = FileDownloaderService()
-    private let uproarClient = UproarClient()
+    private let dependencies = AppDependency()
     
-    private var playerTrackQueue = [PlayerAssetBasedTrack]()
-    private var skipTracks = [Int]()
-    private let lastDequeued: Atomic<PlayerAssetBasedTrack?> = Atomic(nil)
+    private lazy var trackQueueManager: TrackQueueManager = { TrackQueueManager(dependencies: self.dependencies) }()
     
-    private lazy var enqueueTrackAction: Action<PlayerAssetBasedTrack, (), NoError> = self.enqueueTrack()
-    private(set) lazy var playNextAction: Action<(), (), NoError> = { Action { SignalProducer(value: $0) } }()
-    private(set) lazy var nextVideoAssetSignalProducer: SignalProducer<AVURLAsset, NoError> = self.nextVideoAsset()
+    private let currentTrack: Atomic<PlayerAssetBasedTrack?> = Atomic(nil)
+    
+    let playNextAction: Action<(), (), NoError> = Action { SignalProducer(value: $0) }
+    private(set) lazy var nextTrackAssetSignalProducer: SignalProducer<AVURLAsset, NoError> = self.nextTrackAsset()
     
     override init() {
         super.init()
         
-        SignalProducer(uproarClient.updateSignal)
-            .flatMap(.merge) {[weak self] (update) -> SignalProducer<PlayerAssetBasedTrack, NoError> in
+        SignalProducer(dependencies.uproarClient.updateSignal)
+            .flatMap(.merge) {[weak self] (update) -> SignalProducer<UproarContent, NoError> in
                 guard let strongSelf = self else {
                     return SignalProducer.empty
                 }
                 
                 switch update {
                 case .addContent(let content):
-                    return SignalProducer(strongSelf.download(content))
+                    return strongSelf.trackQueueManager.enqueueTrackAction.apply(content).ignoreErrors()
                 case .skip(let orig):
-                    if let lastDequeued = strongSelf.lastDequeued.value, lastDequeued.orig == orig {
-                        strongSelf.update(status: .skip(lastDequeued.orig, lastDequeued.messageId, lastDequeued.chatId))
-                        
+                    let currentTrack: PlayerAssetBasedTrack? = (strongSelf.currentTrack.modify { track in
+                        guard let currentTrackValue = track, currentTrackValue.orig == orig else {
+                            return nil
+                        }
+                        strongSelf.dependencies.uproarClient.update(status: .skip(currentTrackValue.orig, currentTrackValue.messageId, currentTrackValue.chatId)).start()
+                        track = nil
+                        return currentTrackValue
+                    })
+                    if currentTrack != nil {
                         return strongSelf.playNextAction.apply(())
-                            .flatMap(.latest) { SignalProducer<PlayerAssetBasedTrack, NoError>.empty }
-                            .flatMapError { _ in SignalProducer<PlayerAssetBasedTrack, NoError>.empty }
-                    } else if let idx = strongSelf.playerTrackQueue.index(where: { $0.orig == orig }) {
-                        let queuedTrack = strongSelf.playerTrackQueue[idx]
-                        strongSelf.playerTrackQueue.remove(at: idx)
-                        
-                        strongSelf.update(status: .skip(queuedTrack.orig, queuedTrack.messageId, queuedTrack.chatId))
-                        
-                        return SignalProducer.empty
+                            .flatMap(.latest) { SignalProducer<UproarContent, NoError>.empty }
+                            .ignoreErrors()
                     } else {
-                        strongSelf.skipTracks.append(orig)
-                        
-                        return SignalProducer.empty
+                        return strongSelf.trackQueueManager.skipTrackAction.apply(orig)
+                            .flatMap(.latest) { _ in SignalProducer<UproarContent, NoError>.empty }
+                            .ignoreErrors()
                     }
                 }
             }
-            .start(handleTrack)
+            .start()
     }
     
-    private func enqueueTrack() -> Action<PlayerAssetBasedTrack, (), NoError> {
-        return Action {[weak self] (playerTrack) -> SignalProducer<(), NoError> in
-            guard let strongSelf = self else {
-                return SignalProducer.empty
-            }
-            guard !strongSelf.skipTracks.contains(playerTrack.orig) else {
-                // TODO: clean skipTracks array
-                strongSelf.update(status: .skip(playerTrack.orig, playerTrack.messageId, playerTrack.chatId))
-                return SignalProducer.empty
-            }
-            
-            if !strongSelf.playerTrackQueue.contains(where: { $0.asset.url == playerTrack.asset.url }) {
-                strongSelf.playerTrackQueue.append(playerTrack)
-            }
-            strongSelf.update(status: .queue(playerTrack.orig, playerTrack.messageId, playerTrack.chatId))
-            return SignalProducer(value: ())
-        }
-    }
-    
-    private func nextVideoAsset() -> SignalProducer<AVURLAsset, NoError> {
+    private func nextTrackAsset() -> SignalProducer<AVURLAsset, NoError> {
         return SignalProducer(playNextAction.values)
             .flatMap(.latest) {[weak self] _ -> SignalProducer<AVURLAsset, NoError> in
                 guard let strongSelf = self else {
                     return SignalProducer.empty
                 }
                 
-                if let prevTrack = strongSelf.lastDequeued.value {
-                    strongSelf.update(status: .done(prevTrack.orig, prevTrack.messageId, prevTrack.chatId))
+                if let prevTrack = strongSelf.currentTrack.swap(nil) {
+                    strongSelf.dependencies.uproarClient.update(status: .done(prevTrack.orig, prevTrack.messageId, prevTrack.chatId)).start()
                 }
                 
-                let waitAsset = strongSelf.playerTrackQueue.isEmpty ? SignalProducer(strongSelf.enqueueTrackAction.values.take(first: 1)) : SignalProducer(value: ())
-                return waitAsset.flatMap(.latest) { _ -> SignalProducer<AVURLAsset, NoError> in
-                    guard let strongSelf = self else {
-                        return SignalProducer.empty
-                    }
-                    
-                    let playerTrack = strongSelf.playerTrackQueue.removeFirst()
-                    strongSelf.lastDequeued.value = playerTrack
-                    strongSelf.update(status: .playing(playerTrack.orig, playerTrack.messageId, playerTrack.chatId))
-                    return SignalProducer(value: playerTrack.asset)
+                return strongSelf.trackQueueManager.dequeueNextTrackAction.apply()
+                    .flatMap(.latest) { track -> SignalProducer<AVURLAsset, ActionError<TrackQueueError>> in
+                        guard let strongSelf = self else {
+                            return SignalProducer.empty
+                        }
+                        
+                        let playNextSignalProducer = SignalProducer(value: ())
+                            .delay(20.0, on: QueueScheduler.main)
+                            .flatMap(.latest) { _ in strongSelf.playNextAction.apply() }
+                            .flatMap(.latest) { _ in SignalProducer<AVURLAsset, NoError>.empty
+                            }.flatMapError { _ -> SignalProducer<AVURLAsset, ActionError<TrackQueueError>> in
+                                SignalProducer<AVURLAsset, ActionError<TrackQueueError>>.empty
+                        }
+                        
+                        // TODO: play PlayerUrlBasedTrack
+                        guard let assetBasedTrack = track as? PlayerAssetBasedTrack else {
+                            strongSelf.dependencies.uproarClient.update(status: .skip(track.orig, track.messageId, track.chatId)).start()
+                            return playNextSignalProducer
+                        }
+                        
+                        do {
+                            try strongSelf.validate(asset: assetBasedTrack.asset)
+                            strongSelf.currentTrack.value = assetBasedTrack
+                            strongSelf.dependencies.uproarClient.update(status: .playing(track.orig, track.messageId, track.chatId)).start()
+                            
+                            return SignalProducer(value: assetBasedTrack.asset)
+                        } catch AssetError.failedKey(let key, let error) {
+                            let stringFormat = NSLocalizedString("error.asset_key_%@_failed.description", comment: "Can't use this AVAsset because one of it's keys failed to load")
+                            let message = String.localizedStringWithFormat(stringFormat, key)
+                            strongSelf.handleErrorWithMessage(message, error: error)
+                            strongSelf.dependencies.uproarClient.update(status: .skip(track.orig, track.messageId, track.chatId)).start()
+                            return playNextSignalProducer
+                        } catch AssetError.notPlayable {
+                            let message = NSLocalizedString("error.asset_not_playable.description", comment: "Can't use this AVAsset because it isn't playable or has protected content")
+                            strongSelf.handleErrorWithMessage(message)
+                            strongSelf.dependencies.uproarClient.update(status: .skip(track.orig, track.messageId, track.chatId)).start()
+                            return playNextSignalProducer
+                        } catch {
+                            strongSelf.dependencies.uproarClient.update(status: .skip(track.orig, track.messageId, track.chatId)).start()
+                            return playNextSignalProducer
+                        }
+                    }.flatMapError { error in
+                        guard let strongSelf = self else {
+                            return SignalProducer.empty
+                        }
+                        
+                        // TODO: check error
+                        
+                        strongSelf.dependencies.uproarClient.send(message: UproarMessage.boring(Constants.token)).start()
+                        return SignalProducer(value: ())
+                            .delay(20.0, on: QueueScheduler.main)
+                            .flatMap(.latest) { _ in strongSelf.playNextAction.apply(()) }
+                            .flatMap(.latest) { _ in SignalProducer<AVURLAsset, NoError>.empty }
+                            .ignoreErrors()
+                        
                 }
-        }
-    }
-    
-    private func download(_ content: UproarContent) -> Signal<PlayerAssetBasedTrack, NoError> {
-        self.update(status: .download(content.orig, content.messageId, content.chatId))
-        
-        let contentMapping: (URL) -> Signal<PlayerAssetBasedTrack, DownloadingError> = { (localContentUrl) in
-            let asset = AVURLAsset(url: localContentUrl)
-            return Signal { (observer) -> Disposable? in
-                asset.loadValuesAsynchronously(forKeys: Constants.assetKeysRequiredToPlay) {
-                    let playerTrack = PlayerAssetBasedTrack(asset: asset, orig: content.orig, messageId: content.messageId, chatId: content.chatId)
-                    
-                    observer.send(value: playerTrack)
-                    observer.sendCompleted()
-                }
-                return nil
-            }
-        }
-        
-        let contentLoadingErrorMapping: (DownloadingError) -> SignalProducer<PlayerAssetBasedTrack, NoError> = {[weak self] error in
-            self?.handleErrorWithMessage("Content is not loaded", error: error)
-            
-            // TODO: map to PlayerUrlBasedTrack
-            return SignalProducer.empty
-        }
-        
-        switch content {
-        case let video as UproarYoutubeVideo:
-            return self.youtubeDownloaderService.download(by: URL(string: video.urlString)!)
-                .flatMap(.latest, transform: contentMapping)
-                .flatMapError(contentLoadingErrorMapping)
-        case let audio as UproarAudio:
-            return self.fileDownloaderService.download(by: URL(string: audio.urlString)!)
-                .flatMap(.latest, transform: contentMapping)
-                .flatMapError(contentLoadingErrorMapping)
-        default:
-            assertionFailure("Unsupported content type")
-            return Signal.empty
-        }
-    }
-    
-    private func handleTrack(_ event: Event<PlayerAssetBasedTrack, NoError>) {
-        switch event {
-        case .value(let playerTrack):
-            do {
-                try validate(asset: playerTrack.asset)
-                enqueueTrackAction.apply(playerTrack).start()
-            } catch AssetError.failedKey(let key, let error) {
-                let stringFormat = NSLocalizedString("error.asset_key_%@_failed.description", comment: "Can't use this AVAsset because one of it's keys failed to load")
-                let message = String.localizedStringWithFormat(stringFormat, key)
-                handleErrorWithMessage(message, error: error)
-                self.update(status: .skip(playerTrack.orig, playerTrack.messageId, playerTrack.chatId))
-            } catch AssetError.notPlayable {
-                let message = NSLocalizedString("error.asset_not_playable.description", comment: "Can't use this AVAsset because it isn't playable or has protected content")
-                handleErrorWithMessage(message)
-                self.update(status: .skip(playerTrack.orig, playerTrack.messageId, playerTrack.chatId))
-            } catch {
-                self.update(status: .skip(playerTrack.orig, playerTrack.messageId, playerTrack.chatId))
-            }
-            break
-        default:
-            print("Something went wrong")
-            break
         }
     }
     
@@ -183,9 +142,5 @@ class ViewModel: NSObject {
     
     private func handleErrorWithMessage(_ message: String?, error: Error? = nil) {
         print("Error occured with message: \(String(describing: message)), error: \(String(describing: error?.localizedDescription)).")
-    }
-    
-    private func update(status: UproarTrackStatus) {
-        self.uproarClient.send(message: .trackStatus(status, Constants.token)).start()
     }
 }
