@@ -21,13 +21,25 @@ class UproarClient: MQTTSessionDelegate {
     private let isManualDisconnected: Atomic<Bool> = Atomic(false)
     private let (disconnectSignal, disconnectObserver) = Signal<(), NoError>.pipe()
     
+    lazy private var connectMqttAction: Action<(), (), AnyError> = self.connectMqtt()
+    
+    lazy private(set) var connectedSignal: Signal<(), NoError> = { self.connectMqttAction.values.ignoreErrors() }()
+    
     let (updateSignal, updateObserver) = Signal<UproarUpdate, NoError>.pipe()
     
     init() {
         let subscribeToDeviceChannelSignal = self.subscribeToDeviceChannel()
         let sendRegisterSignal = self.sendRegister()
         let disconnectSignalProducer = SignalProducer(disconnectSignal)
-        connectMqtt()
+        connectMqttAction.apply()
+            .flatMapError { actionError -> SignalProducer<(), AnyError> in
+                switch actionError {
+                case .producerFailed(let error):
+                    return SignalProducer(error: error)
+                case .disabled:
+                    return SignalProducer.empty
+                }
+            }
             .flatMap(.concat) { subscribeToDeviceChannelSignal }
             .flatMap(.concat) { sendRegisterSignal }
             .then(disconnectSignalProducer.take(first: 1))
@@ -37,20 +49,22 @@ class UproarClient: MQTTSessionDelegate {
             .start()
     }
     
-    private func connectMqtt() -> SignalProducer<(), AnyError> {
-        return SignalProducer {[weak self] (observer, disposable) in
-            guard let strongSelf = self else {
-                observer.sendCompleted()
-                return
-            }
-            strongSelf.mqttSession.connect { (succeeded, error) -> Void in
-                if succeeded {
-                    print("Connected!")
-                    observer.send(value: ())
+    private func connectMqtt() -> Action<(), (), AnyError> {
+        return Action { _ -> SignalProducer<(), AnyError> in
+            return SignalProducer {[weak self] (observer, disposable) in
+                guard let strongSelf = self else {
                     observer.sendCompleted()
-                } else {
-                    print("Couldn't establish connect to cloudmqtt.com\n\(error)")
-                    observer.send(error: AnyError(error))
+                    return
+                }
+                strongSelf.mqttSession.connect { (succeeded, error) -> Void in
+                    if succeeded {
+                        print("Connected!")
+                        observer.send(value: ())
+                        observer.sendCompleted()
+                    } else {
+                        print("Couldn't establish connect to cloudmqtt.com\n\(error)")
+                        observer.send(error: AnyError(error))
+                    }
                 }
             }
         }

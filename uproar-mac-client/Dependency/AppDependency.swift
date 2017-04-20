@@ -8,6 +8,9 @@
 
 import Cocoa
 
-struct AppDependency: HasUproarClient {
+struct AppDependency: HasUproarClient, HasFileDownloaderService, HasYoutubeDownloaderService {
     let uproarClient = UproarClient()
+    
+    let youtubeDownloaderService = YoutubeDownloaderService()
+    let fileDownloaderService = FileDownloaderService()
 }

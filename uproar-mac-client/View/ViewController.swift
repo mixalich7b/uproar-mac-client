@@ -10,6 +10,7 @@ import Cocoa
 import AVFoundation
 import ReactiveCocoa
 import ReactiveSwift
+import Result
 
 class ViewController: NSViewController {
     
@@ -44,26 +45,33 @@ class ViewController: NSViewController {
             }
         }
         
-        viewModel.nextTrackAssetSignalProducer.on(
-            started: {[weak self] in
-                self?.viewModel.playNextAction.apply(()).start()
-            },
-            value: {[weak self] (asset) in
-                let playerItem = AVPlayerItem(asset: asset)
-                self?.player.replaceCurrentItem(with: playerItem)
-                if self?.player.rate ?? 0.0 < 0.7 {
-                    self?.player.play()
+        SignalProducer(viewModel.loadedSignal)
+            .delay(90.0, on: QueueScheduler.main)
+            .flatMap(.latest) {[weak self] _ -> SignalProducer<(), ActionError<NoError>> in
+                guard let strongSelf = self else {
+                    return SignalProducer.empty
                 }
-            }
-            )
-            .flatMap(.latest) { _ in
-                return NotificationCenter.default.reactive
-                    .notifications(forName: NSNotification.Name.AVPlayerItemDidPlayToEndTime)
-                    .take(first: 1)
-            }.flatMap(.latest) {[weak self] _ in
-                return self?.viewModel.playNextAction.apply(()) ?? SignalProducer.empty
-            }
-            .start()
+                
+                return strongSelf.viewModel.nextTrackAssetSignalProducer.on(
+                    started: {
+                        self?.viewModel.playNextAction.apply(()).start()
+                },
+                    value: {[weak self] (asset) in
+                        let playerItem = AVPlayerItem(asset: asset)
+                        self?.player.replaceCurrentItem(with: playerItem)
+                        if self?.player.rate ?? 0.0 < 0.7 {
+                            self?.player.play()
+                        }
+                })
+                    .flatMap(.latest) { _ in
+                        return NotificationCenter.default.reactive
+                            .notifications(forName: NSNotification.Name.AVPlayerItemDidPlayToEndTime)
+                            .take(first: 1)
+                    }
+                    .flatMap(.latest) { _ in
+                        return self?.viewModel.playNextAction.apply(()) ?? SignalProducer.empty
+                }
+            }.start(.init())
     }
     
     private func handleErrorWithMessage(_ message: String?, error: Error? = nil) {

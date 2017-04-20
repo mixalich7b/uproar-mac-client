@@ -22,6 +22,8 @@ class ViewModel: NSObject {
     let playNextAction: Action<(), (), NoError> = Action { SignalProducer(value: $0) }
     private(set) lazy var nextTrackAssetSignalProducer: SignalProducer<AVURLAsset, NoError> = self.nextTrackAsset()
     
+    lazy private(set) var loadedSignal: Signal<(), NoError> = { self.dependencies.uproarClient.connectedSignal.take(first: 1) }()
+    
     override init() {
         super.init()
         
@@ -75,7 +77,7 @@ class ViewModel: NSObject {
                         }
                         
                         let playNextSignalProducer = SignalProducer(value: ())
-                            .delay(20.0, on: QueueScheduler.main)
+                            .delay(10.0, on: QueueScheduler.main)
                             .flatMap(.latest) { _ in strongSelf.playNextAction.apply() }
                             .flatMap(.latest) { _ in SignalProducer<AVURLAsset, NoError>.empty
                             }.flatMapError { _ -> SignalProducer<AVURLAsset, ActionError<TrackQueueError>> in

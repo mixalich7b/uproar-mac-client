@@ -12,7 +12,7 @@ import AVFoundation
 
 class TrackQueueManager {
     
-    typealias Dependencies = HasUproarClient
+    typealias Dependencies = HasUproarClient & HasYoutubeDownloaderService & HasFileDownloaderService
     
     lazy private(set) var enqueueTrackAction: Action<UproarContent, UproarContent, NoError> = self.enqueueTrack()
     lazy private(set) var skipTrackAction: Action<Int, UproarContent, TrackQueueError> = self.skipTrack()
@@ -22,16 +22,14 @@ class TrackQueueManager {
     private let playQueue = Atomic<[PlayerTrack]>([])
     
     private let currentDownloading: Atomic<UproarContent?> = Atomic(nil)
-    
-    private let youtubeDownloaderService = YoutubeDownloaderService()
-    private let fileDownloaderService = FileDownloaderService()
+    private let downloadingDisposable = SerialDisposable()
     
     private let dependencies: Dependencies
     
     init(dependencies: Dependencies) {
         self.dependencies = dependencies
         
-        downloadNext().start()
+        restartDownloading()
         
         skipTrackAction.values
             .flatMap(.latest) {[weak self] (skippedContent) -> SignalProducer<(), AnyError> in
@@ -42,6 +40,10 @@ class TrackQueueManager {
             }
             .ignoreErrors()
             .observe(.init())
+    }
+    
+    private func restartDownloading() {
+        downloadingDisposable.inner = downloadNext().start()
     }
     
     private func enqueueTrack() -> Action<UproarContent, UproarContent, NoError> {
@@ -72,6 +74,7 @@ class TrackQueueManager {
                     if current?.orig ?? 0 == orig {
                         let oldValue = current
                         current = nil
+                        self?.restartDownloading()
                         return oldValue
                     } else {
                         return nil
@@ -160,11 +163,11 @@ class TrackQueueManager {
         
         switch content {
         case _ as UproarYoutubeVideo:
-            return self.youtubeDownloaderService.download(by: url)
+            return self.dependencies.youtubeDownloaderService.download(by: url)
                 .flatMap(.latest, transform: contentMapping)
                 .flatMapError(contentLoadingErrorMapping)
         case _ as UproarAudio:
-            return self.fileDownloaderService.download(by: url)
+            return self.dependencies.fileDownloaderService.download(by: url)
                 .flatMap(.latest, transform: contentMapping)
                 .flatMapError(contentLoadingErrorMapping)
         default:
