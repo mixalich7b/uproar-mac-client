@@ -137,7 +137,7 @@ class ViewModel: NSObject {
             }
         }
         
-        if !asset.isPlayable || asset.hasProtectedContent {
+        if !asset.isPlayable /*|| asset.hasProtectedContent*/ {
             throw AssetError.notPlayable
         }
     }

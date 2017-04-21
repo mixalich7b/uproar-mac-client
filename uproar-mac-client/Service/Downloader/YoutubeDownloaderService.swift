@@ -79,6 +79,8 @@ class YoutubeDownloaderService: BaseDownloaderService {
                 }
                 PyObject_CallObject(downloadFunc, args)
                 
+                sleep(5)
+                
                 let pollFinalFilepathFunc = PyObject_GetAttrString(downloaderModule, "pollFinalFilepath")
                 guard PyCallable_Check(pollFinalFilepathFunc) == 1 else {
                     observer.send(error: DownloadingError(message: "pollFinalFilepath func missed"))
